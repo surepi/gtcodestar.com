@@ -26,10 +26,12 @@ class R2Storage
         $this->secretAccessKey = $this->getConfig('r2_secret_access_key');
         $this->bucket         = $this->getConfig('r2_bucket');
         $customDomain = trim($this->getConfig('r2_custom_domain'));
-        if ($customDomain && !preg_match('#^https?://#i', $customDomain)) {
-            $customDomain = 'https://' . $customDomain;
+        // 统一处理：去掉已有协议头，强制加 https://
+        if ($customDomain) {
+            $customDomain = preg_replace('#^https?://#i', '', $customDomain);
+            $customDomain = 'https://' . rtrim($customDomain, '/');
         }
-        $this->customDomain   = rtrim($customDomain, '/');
+        $this->customDomain   = $customDomain;
         $this->uploadPath     = trim($this->getConfig('r2_upload_path') ?: 'uploads', '/');
         $this->endpoint       = "https://{$this->accountId}.r2.cloudflarestorage.com";
     }
