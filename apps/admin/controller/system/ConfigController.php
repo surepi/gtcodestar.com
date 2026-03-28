@@ -97,6 +97,9 @@ class ConfigController extends Controller
                 case 'member':
                     success('修改成功！', url('/admin/Config/index' . get_tab('t9'), false));
                     break;
+                case 'r2':
+                    success('修改成功！', url('/admin/Config/index' . get_tab('t10'), false));
+                    break;
                 case 'upgrade':
                     success('修改成功！', url('/admin/Upgrade/index' . get_tab('t2'), false));
                     break;

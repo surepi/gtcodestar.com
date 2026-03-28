@@ -346,6 +346,20 @@ function handle_upload($file, $temp, $array_ext_allow, $max_width, $max_height, 
             watermark_img($file_path);
         }
     }
+
+    // R2 云存储同步
+    try {
+        require_once CORE_PATH . '/extend/R2Storage.php';
+        $r2 = new R2Storage();
+        if ($r2->isEnabled()) {
+            // 用 static/upload 之后的相对路径作为对象名
+            $r2ObjectName = $file_type . '/' . date('Ymd') . '/' . basename($file_path);
+            $r2->upload($file_path, $r2ObjectName);
+        }
+    } catch (Exception $e) {
+        // R2 上传失败不影响本地上传
+    }
+
     return $save_file;
 }
 
