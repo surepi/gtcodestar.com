@@ -25,7 +25,11 @@ class R2Storage
         $this->accessKeyId    = $this->getConfig('r2_access_key_id');
         $this->secretAccessKey = $this->getConfig('r2_secret_access_key');
         $this->bucket         = $this->getConfig('r2_bucket');
-        $this->customDomain   = rtrim($this->getConfig('r2_custom_domain'), '/');
+        $customDomain = trim($this->getConfig('r2_custom_domain'));
+        if ($customDomain && !preg_match('#^https?://#i', $customDomain)) {
+            $customDomain = 'https://' . $customDomain;
+        }
+        $this->customDomain   = rtrim($customDomain, '/');
         $this->uploadPath     = trim($this->getConfig('r2_upload_path') ?: 'uploads', '/');
         $this->endpoint       = "https://{$this->accountId}.r2.cloudflarestorage.com";
     }

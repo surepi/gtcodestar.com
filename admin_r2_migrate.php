@@ -115,7 +115,11 @@ if ($action === 'replace_db') {
     $customDomain = '';
     $stmt = $pdo->query("SELECT value FROM ay_config WHERE name = 'r2_custom_domain'");
     if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $customDomain = rtrim($row['value'], '/');
+        $customDomain = trim($row['value']);
+        if ($customDomain && !preg_match('#^https?://#i', $customDomain)) {
+            $customDomain = 'https://' . $customDomain;
+        }
+        $customDomain = rtrim($customDomain, '/');
     }
     
     if (empty($customDomain)) {
