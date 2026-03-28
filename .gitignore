@@ -1,0 +1,12 @@
+# 上传文件（已迁移到 R2）
+static/upload/
+
+# 运行时文件
+runtime/
+
+# 系统缓存
+*.log
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
