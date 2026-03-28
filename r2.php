@@ -73,6 +73,21 @@ if ($action === 'upload_batch') {
 
     foreach ($batch as $file) {
         $relativePath = str_replace(ROOT_PATH . '/static/upload/', '', $file);
+        $localSize = filesize($file);
+
+        // 检查 R2 上是否已存在且大小一致，一致则跳过
+        $head = $r2->headObject($relativePath);
+        if ($head['exists'] && $head['size'] == $localSize) {
+            $results[] = [
+                'file' => $relativePath,
+                'success' => true,
+                'url' => '',
+                'message' => '已存在，跳过'
+            ];
+            $successCount++;
+            continue;
+        }
+
         $result = $r2->upload($file, $relativePath);
         $results[] = [
             'file' => $relativePath,
@@ -459,7 +474,7 @@ function uploadBatch(offset) {
         document.getElementById('upload-stats').innerHTML =
             '已处理: ' + (offset + d.processed) + ' / ' + d.total + ' | 本批成功: ' + d.success_count + '/' + d.processed;
         d.results.forEach(r => {
-            appendLog('upload-log', r.success ? '✅ ' + r.file : '❌ ' + r.file + ' — ' + r.message, r.success ? 'ok' : 'err');
+            appendLog('upload-log', r.success ? (r.message === '已存在，跳过' ? '⏭️ ' + r.file + ' (已存在)' : '✅ ' + r.file) : '❌ ' + r.file + ' — ' + r.message, r.success ? 'ok' : 'err');
         });
         if (!d.done && !uploadStopped) { uploadBatch(offset + d.processed); }
         else if (d.done) {

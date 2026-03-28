@@ -352,9 +352,12 @@ function handle_upload($file, $temp, $array_ext_allow, $max_width, $max_height, 
         require_once CORE_PATH . '/extend/R2Storage.php';
         $r2 = new R2Storage();
         if ($r2->isEnabled()) {
-            // 用 static/upload 之后的相对路径作为对象名
             $r2ObjectName = $file_type . '/' . date('Ymd') . '/' . basename($file_path);
-            $r2->upload($file_path, $r2ObjectName);
+            // 检查是否已存在，避免重复上传
+            $head = $r2->headObject($r2ObjectName);
+            if (!$head['exists'] || $head['size'] != filesize($file_path)) {
+                $r2->upload($file_path, $r2ObjectName);
+            }
         }
     } catch (Exception $e) {
         // R2 上传失败不影响本地上传
