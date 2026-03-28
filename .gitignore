@@ -1,6 +1,9 @@
 # 上传文件（已迁移到 R2）
 static/upload/
 
+# 静态图片（大文件不进 Git）
+static/images/
+
 # 运行时文件
 runtime/
 
