@@ -5,6 +5,7 @@
  * 功能：
  * 1. 扫描 static/upload/ 下所有文件上传到 R2
  * 2. 替换数据库中所有 /static/upload/ 路径为 R2 CDN 域名
+ * 3. 对比本地与 R2 文件，确认一致后删除本地文件
  * 
  * 访问方式：浏览器访问 /admin_r2_migrate.php?action=xxx
  * 需要先在后台配置好 R2 参数
@@ -194,6 +195,135 @@ if ($action === 'replace_db') {
     exit;
 }
 
+// ========== 对比本地与 R2 文件 ==========
+if ($action === 'compare_batch') {
+    header('Content-Type: application/json; charset=utf-8');
+
+    if (!$r2->isEnabled()) {
+        die(json_encode(['success' => false, 'message' => 'R2未启用']));
+    }
+
+    $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
+    $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 20;
+
+    $files = scanUploadFiles($uploadDir);
+    $total = count($files);
+    $batch = array_slice($files, $offset, $limit);
+
+    $results = [];
+    $matchCount = 0;
+    $missCount = 0;
+
+    foreach ($batch as $file) {
+        $relativePath = str_replace(ROOT_PATH . '/static/upload/', '', $file);
+        $localSize = filesize($file);
+
+        // 用 HEAD 请求检查 R2 上是否存在且大小一致
+        $r2Check = $r2->headObject($relativePath);
+
+        if ($r2Check['exists'] && $r2Check['size'] == $localSize) {
+            $results[] = [
+                'file' => $relativePath,
+                'status' => 'match',
+                'local_size' => $localSize,
+                'r2_size' => $r2Check['size']
+            ];
+            $matchCount++;
+        } elseif ($r2Check['exists']) {
+            $results[] = [
+                'file' => $relativePath,
+                'status' => 'size_mismatch',
+                'local_size' => $localSize,
+                'r2_size' => $r2Check['size']
+            ];
+            $missCount++;
+        } else {
+            $results[] = [
+                'file' => $relativePath,
+                'status' => 'missing',
+                'local_size' => $localSize,
+                'r2_size' => 0
+            ];
+            $missCount++;
+        }
+    }
+
+    echo json_encode([
+        'total' => $total,
+        'offset' => $offset,
+        'processed' => count($batch),
+        'match_count' => $matchCount,
+        'miss_count' => $missCount,
+        'done' => ($offset + $limit) >= $total,
+        'results' => $results
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+// ========== 删除已同步的本地文件 ==========
+if ($action === 'delete_batch') {
+    header('Content-Type: application/json; charset=utf-8');
+
+    if (!$r2->isEnabled()) {
+        die(json_encode(['success' => false, 'message' => 'R2未启用']));
+    }
+
+    $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
+    $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 20;
+
+    $files = scanUploadFiles($uploadDir);
+    $total = count($files);
+    // 注意：每删一批文件列表会变，所以每次都从头扫描，取前 limit 个
+    $batch = array_slice($files, 0, $limit);
+
+    $results = [];
+    $deletedCount = 0;
+    $skippedCount = 0;
+
+    foreach ($batch as $file) {
+        $relativePath = str_replace(ROOT_PATH . '/static/upload/', '', $file);
+        $localSize = filesize($file);
+
+        // 先确认 R2 上存在且大小一致
+        $r2Check = $r2->headObject($relativePath);
+
+        if ($r2Check['exists'] && $r2Check['size'] == $localSize) {
+            // 安全删除本地文件
+            if (unlink($file)) {
+                $results[] = ['file' => $relativePath, 'status' => 'deleted'];
+                $deletedCount++;
+            } else {
+                $results[] = ['file' => $relativePath, 'status' => 'delete_failed'];
+                $skippedCount++;
+            }
+        } else {
+            $results[] = [
+                'file' => $relativePath,
+                'status' => 'skipped',
+                'reason' => $r2Check['exists'] ? '大小不一致' : 'R2上不存在'
+            ];
+            $skippedCount++;
+        }
+    }
+
+    // 删除后清理空目录
+    cleanEmptyDirs($uploadDir);
+
+    // 重新计算剩余文件
+    $remaining = count(scanUploadFiles($uploadDir));
+
+    echo json_encode([
+        'total_before' => $total,
+        'processed' => count($batch),
+        'deleted' => $deletedCount,
+        'skipped' => $skippedCount,
+        'remaining' => $remaining,
+        'done' => $remaining == 0 || ($deletedCount == 0 && $skippedCount > 0),
+        'results' => $results
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 // ========== 默认：显示管理界面 ==========
 ?>
 <!DOCTYPE html>
@@ -213,14 +343,22 @@ if ($action === 'replace_db') {
         .btn-success { background: #52c41a; }
         .btn-danger { background: #ff4d4f; }
         .btn-warning { background: #faad14; color: #333; }
+        .btn-dark { background: #333; }
         .btn:disabled { opacity: .5; cursor: not-allowed; }
         .progress-bar { width: 100%; height: 24px; background: #e8e8e8; border-radius: 12px; overflow: hidden; margin: 12px 0; }
-        .progress-fill { height: 100%; background: #1890ff; transition: width .3s; text-align: center; color: #fff; font-size: 12px; line-height: 24px; }
+        .progress-fill { height: 100%; transition: width .3s; text-align: center; color: #fff; font-size: 12px; line-height: 24px; }
+        .progress-fill.blue { background: #1890ff; }
+        .progress-fill.green { background: #52c41a; }
+        .progress-fill.orange { background: #fa8c16; }
+        .progress-fill.red { background: #ff4d4f; }
         .log { max-height: 300px; overflow-y: auto; background: #1e1e1e; color: #d4d4d4; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 13px; line-height: 1.6; margin-top: 12px; }
         .log .ok { color: #52c41a; }
         .log .err { color: #ff4d4f; }
         .log .info { color: #1890ff; }
-        .warn { padding: 12px; background: #fff7e6; border: 1px solid #ffe58f; border-radius: 6px; margin: 12px 0; color: #874d00; }
+        .log .warn { color: #faad14; }
+        .warn-box { padding: 12px; background: #fff7e6; border: 1px solid #ffe58f; border-radius: 6px; margin: 12px 0; color: #874d00; }
+        .danger-box { padding: 12px; background: #fff1f0; border: 1px solid #ffa39e; border-radius: 6px; margin: 12px 0; color: #a8071a; }
+        .stats { margin: 8px 0; font-size: 14px; color: #666; }
     </style>
 </head>
 <body>
@@ -240,17 +378,41 @@ if ($action === 'replace_db') {
         <button class="btn btn-success" id="btn-upload" onclick="startUpload()">开始上传</button>
         <button class="btn btn-warning" id="btn-stop" onclick="stopUpload()" style="display:none">暂停</button>
         <div class="progress-bar" id="upload-progress" style="display:none">
-            <div class="progress-fill" id="upload-fill" style="width:0%">0%</div>
+            <div class="progress-fill blue" id="upload-fill" style="width:0%">0%</div>
         </div>
-        <div id="upload-stats"></div>
+        <div class="stats" id="upload-stats"></div>
         <div class="log" id="upload-log" style="display:none"></div>
     </div>
 
     <div class="card">
         <h2>第三步：替换数据库链接</h2>
-        <div class="warn">⚠️ 此操作将修改数据库，建议先备份！会将所有 <code>/static/upload/</code> 路径替换为 R2 CDN 域名。</div>
+        <div class="warn-box">⚠️ 此操作将修改数据库，建议先备份！会将所有 <code>/static/upload/</code> 路径替换为 R2 CDN 域名。</div>
         <button class="btn btn-danger" id="btn-replace" onclick="replaceDb()">替换数据库链接</button>
         <div id="replace-result" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+        <h2>第四步：对比文件</h2>
+        <p>逐个检查本地文件是否已在 R2 上存在，且文件大小一致。</p>
+        <button class="btn btn-primary" id="btn-compare" onclick="startCompare()">开始对比</button>
+        <button class="btn btn-warning" id="btn-compare-stop" onclick="stopCompare()" style="display:none">暂停</button>
+        <div class="progress-bar" id="compare-progress" style="display:none">
+            <div class="progress-fill green" id="compare-fill" style="width:0%">0%</div>
+        </div>
+        <div class="stats" id="compare-stats"></div>
+        <div class="log" id="compare-log" style="display:none"></div>
+    </div>
+
+    <div class="card">
+        <h2>第五步：删除本地文件</h2>
+        <div class="danger-box">🗑️ <strong>危险操作！</strong>只会删除 R2 上已存在且大小一致的本地文件。不一致或 R2 上不存在的文件会被跳过保留。<br>建议先完成第四步对比确认无误后再操作。</div>
+        <button class="btn btn-dark" id="btn-delete" onclick="startDelete()">删除已同步的本地文件</button>
+        <button class="btn btn-warning" id="btn-delete-stop" onclick="stopDelete()" style="display:none">暂停</button>
+        <div class="progress-bar" id="delete-progress" style="display:none">
+            <div class="progress-fill red" id="delete-fill" style="width:0%">0%</div>
+        </div>
+        <div class="stats" id="delete-stats"></div>
+        <div class="log" id="delete-log" style="display:none"></div>
     </div>
 
     <div class="card">
@@ -259,115 +421,211 @@ if ($action === 'replace_db') {
 </div>
 
 <script>
-var uploading = false;
-var stopped = false;
+/* ===== 上传 ===== */
+var uploading = false, uploadStopped = false;
 
 function testR2() {
     document.getElementById('test-result').innerHTML = '测试中...';
-    fetch('?action=test')
-        .then(r => r.json())
-        .then(d => {
-            document.getElementById('test-result').innerHTML = d.success
-                ? '<span style="color:#52c41a">✅ ' + d.message + '</span>'
-                : '<span style="color:#ff4d4f">❌ ' + d.message + '</span>';
-        })
-        .catch(e => {
-            document.getElementById('test-result').innerHTML = '<span style="color:#ff4d4f">请求失败</span>';
-        });
+    fetch('?action=test').then(r => r.json()).then(d => {
+        document.getElementById('test-result').innerHTML = d.success
+            ? '<span style="color:#52c41a">✅ ' + d.message + '</span>'
+            : '<span style="color:#ff4d4f">❌ ' + d.message + '</span>';
+    }).catch(e => {
+        document.getElementById('test-result').innerHTML = '<span style="color:#ff4d4f">请求失败</span>';
+    });
 }
 
 function startUpload() {
     if (uploading) return;
-    uploading = true;
-    stopped = false;
+    uploading = true; uploadStopped = false;
     document.getElementById('btn-upload').disabled = true;
     document.getElementById('btn-stop').style.display = 'inline-block';
-    document.getElementById('upload-progress').style.display = 'block';
-    document.getElementById('upload-log').style.display = 'block';
+    show('upload-progress'); show('upload-log');
     document.getElementById('upload-log').innerHTML = '';
     uploadBatch(0);
 }
-
 function stopUpload() {
-    stopped = true;
+    uploadStopped = true;
     document.getElementById('btn-stop').style.display = 'none';
     document.getElementById('btn-upload').disabled = false;
     uploading = false;
-    appendLog('⏸ 已暂停', 'info');
+    appendLog('upload-log', '⏸ 已暂停', 'info');
 }
-
 function uploadBatch(offset) {
-    if (stopped) return;
-    fetch('?action=upload_batch&offset=' + offset + '&limit=10')
-        .then(r => r.json())
-        .then(d => {
-            var pct = Math.min(100, Math.round((offset + d.processed) / d.total * 100));
-            document.getElementById('upload-fill').style.width = pct + '%';
-            document.getElementById('upload-fill').textContent = pct + '%';
-            document.getElementById('upload-stats').innerHTML =
-                '已处理: ' + (offset + d.processed) + ' / ' + d.total +
-                ' | 本批成功: ' + d.success_count + '/' + d.processed;
-
-            d.results.forEach(function(r) {
-                if (r.success) {
-                    appendLog('✅ ' + r.file, 'ok');
-                } else {
-                    appendLog('❌ ' + r.file + ' — ' + r.message, 'err');
-                }
-            });
-
-            if (!d.done && !stopped) {
-                uploadBatch(offset + d.processed);
-            } else if (d.done) {
-                appendLog('🎉 全部上传完成！', 'info');
-                uploading = false;
-                document.getElementById('btn-upload').disabled = false;
-                document.getElementById('btn-stop').style.display = 'none';
-            }
-        })
-        .catch(function(e) {
-            appendLog('❌ 请求失败: ' + e.message, 'err');
+    if (uploadStopped) return;
+    fetch('?action=upload_batch&offset=' + offset + '&limit=10').then(r => r.json()).then(d => {
+        var pct = Math.min(100, Math.round((offset + d.processed) / d.total * 100));
+        setProgress('upload-fill', pct);
+        document.getElementById('upload-stats').innerHTML =
+            '已处理: ' + (offset + d.processed) + ' / ' + d.total + ' | 本批成功: ' + d.success_count + '/' + d.processed;
+        d.results.forEach(r => {
+            appendLog('upload-log', r.success ? '✅ ' + r.file : '❌ ' + r.file + ' — ' + r.message, r.success ? 'ok' : 'err');
+        });
+        if (!d.done && !uploadStopped) { uploadBatch(offset + d.processed); }
+        else if (d.done) {
+            appendLog('upload-log', '🎉 全部上传完成！', 'info');
             uploading = false;
             document.getElementById('btn-upload').disabled = false;
-        });
+            document.getElementById('btn-stop').style.display = 'none';
+        }
+    }).catch(e => {
+        appendLog('upload-log', '❌ 请求失败: ' + e.message, 'err');
+        uploading = false; document.getElementById('btn-upload').disabled = false;
+    });
 }
 
+/* ===== 替换数据库 ===== */
 function replaceDb() {
     if (!confirm('确定要替换数据库中的文件链接吗？建议先备份数据库！')) return;
     document.getElementById('btn-replace').disabled = true;
     document.getElementById('replace-result').innerHTML = '正在替换...';
-
-    fetch('?action=replace_db')
-        .then(r => r.json())
-        .then(d => {
-            if (d.success) {
-                var html = '<p style="color:#52c41a">✅ 替换完成！共修改 ' + d.total_rows + ' 条记录</p>';
-                html += '<p>旧前缀: <code>' + d.old_prefix + '</code></p>';
-                html += '<p>新前缀: <code>' + d.new_prefix + '</code></p>';
-                html += '<ul>';
-                for (var k in d.replaced) {
-                    if (d.replaced[k] > 0) {
-                        html += '<li>' + k + ': ' + d.replaced[k] + ' 条</li>';
-                    }
-                }
-                html += '</ul>';
-                document.getElementById('replace-result').innerHTML = html;
-            } else {
-                document.getElementById('replace-result').innerHTML =
-                    '<span style="color:#ff4d4f">❌ ' + d.message + '</span>';
-            }
-            document.getElementById('btn-replace').disabled = false;
-        })
-        .catch(function(e) {
-            document.getElementById('replace-result').innerHTML = '<span style="color:#ff4d4f">请求失败</span>';
-            document.getElementById('btn-replace').disabled = false;
-        });
+    fetch('?action=replace_db').then(r => r.json()).then(d => {
+        if (d.success) {
+            var html = '<p style="color:#52c41a">✅ 替换完成！共修改 ' + d.total_rows + ' 条记录</p>';
+            html += '<p>旧前缀: <code>' + d.old_prefix + '</code></p>';
+            html += '<p>新前缀: <code>' + d.new_prefix + '</code></p><ul>';
+            for (var k in d.replaced) { if (d.replaced[k] > 0) html += '<li>' + k + ': ' + d.replaced[k] + ' 条</li>'; }
+            html += '</ul>';
+            document.getElementById('replace-result').innerHTML = html;
+        } else {
+            document.getElementById('replace-result').innerHTML = '<span style="color:#ff4d4f">❌ ' + d.message + '</span>';
+        }
+        document.getElementById('btn-replace').disabled = false;
+    }).catch(e => {
+        document.getElementById('replace-result').innerHTML = '<span style="color:#ff4d4f">请求失败</span>';
+        document.getElementById('btn-replace').disabled = false;
+    });
 }
 
-function appendLog(msg, cls) {
-    var log = document.getElementById('upload-log');
+/* ===== 对比文件 ===== */
+var comparing = false, compareStopped = false;
+var compareMatchTotal = 0, compareMissTotal = 0;
+
+function startCompare() {
+    if (comparing) return;
+    comparing = true; compareStopped = false;
+    compareMatchTotal = 0; compareMissTotal = 0;
+    document.getElementById('btn-compare').disabled = true;
+    document.getElementById('btn-compare-stop').style.display = 'inline-block';
+    show('compare-progress'); show('compare-log');
+    document.getElementById('compare-log').innerHTML = '';
+    compareBatch(0);
+}
+function stopCompare() {
+    compareStopped = true;
+    document.getElementById('btn-compare-stop').style.display = 'none';
+    document.getElementById('btn-compare').disabled = false;
+    comparing = false;
+    appendLog('compare-log', '⏸ 已暂停', 'info');
+}
+function compareBatch(offset) {
+    if (compareStopped) return;
+    fetch('?action=compare_batch&offset=' + offset + '&limit=20').then(r => r.json()).then(d => {
+        var pct = Math.min(100, Math.round((offset + d.processed) / d.total * 100));
+        setProgress('compare-fill', pct);
+        compareMatchTotal += d.match_count;
+        compareMissTotal += d.miss_count;
+        document.getElementById('compare-stats').innerHTML =
+            '已对比: ' + (offset + d.processed) + ' / ' + d.total +
+            ' | ✅ 一致: ' + compareMatchTotal + ' | ❌ 不一致/缺失: ' + compareMissTotal;
+        d.results.forEach(r => {
+            if (r.status === 'match') {
+                appendLog('compare-log', '✅ ' + r.file + ' (' + formatSize(r.local_size) + ')', 'ok');
+            } else if (r.status === 'size_mismatch') {
+                appendLog('compare-log', '⚠️ ' + r.file + ' 大小不一致 (本地:' + formatSize(r.local_size) + ' R2:' + formatSize(r.r2_size) + ')', 'warn');
+            } else {
+                appendLog('compare-log', '❌ ' + r.file + ' R2上不存在', 'err');
+            }
+        });
+        if (!d.done && !compareStopped) { compareBatch(offset + d.processed); }
+        else if (d.done) {
+            var msg = '🎉 对比完成！一致: ' + compareMatchTotal + ' | 不一致/缺失: ' + compareMissTotal;
+            appendLog('compare-log', msg, 'info');
+            if (compareMissTotal === 0) {
+                appendLog('compare-log', '✅ 所有文件已同步，可以安全删除本地文件', 'ok');
+            } else {
+                appendLog('compare-log', '⚠️ 有 ' + compareMissTotal + ' 个文件不一致或缺失，请先重新上传', 'warn');
+            }
+            comparing = false;
+            document.getElementById('btn-compare').disabled = false;
+            document.getElementById('btn-compare-stop').style.display = 'none';
+        }
+    }).catch(e => {
+        appendLog('compare-log', '❌ 请求失败: ' + e.message, 'err');
+        comparing = false; document.getElementById('btn-compare').disabled = false;
+    });
+}
+
+/* ===== 删除本地文件 ===== */
+var deleting = false, deleteStopped = false;
+var deleteTotal = 0, deletedTotal = 0, skippedTotal = 0;
+
+function startDelete() {
+    if (!confirm('确定要删除本地已同步到 R2 的文件吗？\n\n只会删除 R2 上存在且大小一致的文件，其余会跳过。')) return;
+    if (deleting) return;
+    deleting = true; deleteStopped = false;
+    deletedTotal = 0; skippedTotal = 0; deleteTotal = 0;
+    document.getElementById('btn-delete').disabled = true;
+    document.getElementById('btn-delete-stop').style.display = 'inline-block';
+    show('delete-progress'); show('delete-log');
+    document.getElementById('delete-log').innerHTML = '';
+    deleteBatch();
+}
+function stopDelete() {
+    deleteStopped = true;
+    document.getElementById('btn-delete-stop').style.display = 'none';
+    document.getElementById('btn-delete').disabled = false;
+    deleting = false;
+    appendLog('delete-log', '⏸ 已暂停', 'info');
+}
+function deleteBatch() {
+    if (deleteStopped) return;
+    fetch('?action=delete_batch&limit=20').then(r => r.json()).then(d => {
+        if (deleteTotal === 0) deleteTotal = d.total_before;
+        deletedTotal += d.deleted;
+        skippedTotal += d.skipped;
+        var pct = deleteTotal > 0 ? Math.min(100, Math.round((deletedTotal + skippedTotal) / deleteTotal * 100)) : 100;
+        setProgress('delete-fill', pct);
+        document.getElementById('delete-stats').innerHTML =
+            '已删除: ' + deletedTotal + ' | 跳过: ' + skippedTotal + ' | 剩余: ' + d.remaining;
+        d.results.forEach(r => {
+            if (r.status === 'deleted') {
+                appendLog('delete-log', '🗑️ ' + r.file, 'ok');
+            } else if (r.status === 'skipped') {
+                appendLog('delete-log', '⏭️ ' + r.file + ' (' + r.reason + ')', 'warn');
+            } else {
+                appendLog('delete-log', '❌ ' + r.file + ' 删除失败', 'err');
+            }
+        });
+        if (!d.done && !deleteStopped) { deleteBatch(); }
+        else {
+            appendLog('delete-log', '🎉 完成！删除: ' + deletedTotal + ' | 跳过: ' + skippedTotal + ' | 剩余: ' + d.remaining, 'info');
+            deleting = false;
+            document.getElementById('btn-delete').disabled = false;
+            document.getElementById('btn-delete-stop').style.display = 'none';
+        }
+    }).catch(e => {
+        appendLog('delete-log', '❌ 请求失败: ' + e.message, 'err');
+        deleting = false; document.getElementById('btn-delete').disabled = false;
+    });
+}
+
+/* ===== 工具函数 ===== */
+function appendLog(id, msg, cls) {
+    var log = document.getElementById(id);
     log.innerHTML += '<div class="' + (cls||'') + '">' + msg + '</div>';
     log.scrollTop = log.scrollHeight;
+}
+function setProgress(id, pct) {
+    var el = document.getElementById(id);
+    el.style.width = pct + '%';
+    el.textContent = pct + '%';
+}
+function show(id) { document.getElementById(id).style.display = 'block'; }
+function formatSize(bytes) {
+    if (bytes < 1024) return bytes + 'B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + 'KB';
+    return (bytes / 1048576).toFixed(1) + 'MB';
 }
 </script>
 </body>
@@ -390,4 +648,24 @@ function scanUploadFiles($dir) {
     }
     sort($files);
     return $files;
+}
+
+/**
+ * 递归清理空目录
+ */
+function cleanEmptyDirs($dir) {
+    if (!is_dir($dir)) return;
+    $items = scandir($dir);
+    foreach ($items as $item) {
+        if ($item === '.' || $item === '..') continue;
+        $path = $dir . '/' . $item;
+        if (is_dir($path)) {
+            cleanEmptyDirs($path);
+        }
+    }
+    // 再次检查目录是否为空
+    $items = array_diff(scandir($dir), ['.', '..']);
+    if (empty($items) && $dir !== ROOT_PATH . '/static/upload') {
+        rmdir($dir);
+    }
 }

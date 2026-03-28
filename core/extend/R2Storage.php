@@ -131,6 +131,69 @@ class R2Storage
     }
 
     /**
+     * HEAD 请求检查 R2 上文件是否存在及大小
+     * 
+     * @param string $objectName 相对路径（不含 uploadPath 前缀）
+     * @return array ['exists' => bool, 'size' => int]
+     */
+    public function headObject($objectName)
+    {
+        $objectKey = $this->uploadPath . '/' . ltrim($objectName, '/');
+        $host = "{$this->accountId}.r2.cloudflarestorage.com";
+        $uri = '/' . $this->bucket . '/' . $objectKey;
+        $now = gmdate('Ymd\THis\Z');
+        $date = gmdate('Ymd');
+        $contentHash = hash('sha256', '');
+
+        $canonicalHeaders = "host:{$host}\nx-amz-content-sha256:{$contentHash}\nx-amz-date:{$now}\n";
+        $signedHeaders = 'host;x-amz-content-sha256;x-amz-date';
+
+        $canonicalRequest = "HEAD\n{$uri}\n\n{$canonicalHeaders}\n{$signedHeaders}\n{$contentHash}";
+
+        $scope = "{$date}/{$this->region}/s3/aws4_request";
+        $stringToSign = "AWS4-HMAC-SHA256\n{$now}\n{$scope}\n" . hash('sha256', $canonicalRequest);
+
+        $kDate    = hash_hmac('sha256', $date, "AWS4{$this->secretAccessKey}", true);
+        $kRegion  = hash_hmac('sha256', $this->region, $kDate, true);
+        $kService = hash_hmac('sha256', 's3', $kRegion, true);
+        $kSigning = hash_hmac('sha256', 'aws4_request', $kService, true);
+        $signature = hash_hmac('sha256', $stringToSign, $kSigning);
+
+        $authorization = "AWS4-HMAC-SHA256 Credential={$this->accessKeyId}/{$scope}, SignedHeaders={$signedHeaders}, Signature={$signature}";
+
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL            => $this->endpoint . $uri,
+            CURLOPT_CUSTOMREQUEST  => 'HEAD',
+            CURLOPT_NOBODY         => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER         => true,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_TIMEOUT        => 10,
+            CURLOPT_HTTPHEADER     => [
+                "Host: {$host}",
+                "x-amz-content-sha256: {$contentHash}",
+                "x-amz-date: {$now}",
+                "Authorization: {$authorization}",
+            ],
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $contentLength = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+        curl_close($ch);
+
+        if ($httpCode == 200) {
+            if ($contentLength < 0 && preg_match('/content-length:\s*(\d+)/i', $response, $m)) {
+                $contentLength = intval($m[1]);
+            }
+            return ['exists' => true, 'size' => intval($contentLength)];
+        }
+
+        return ['exists' => false, 'size' => 0];
+    }
+
+    /**
      * 删除 R2 文件
      */
     public function delete($objectKey)
