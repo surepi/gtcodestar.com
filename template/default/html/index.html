@@ -17,7 +17,6 @@
 	<!-- 预连接 R2 CDN -->
 	<link rel="preconnect" href="https://r2.gtcodestar.com.cn" crossorigin>
 	<link rel="dns-prefetch" href="https://r2.gtcodestar.com.cn">
-	<script src="{pboot:sitetplpath}/js/jquery-1.12.4.min.js" ></script>
   <!-- video.js 延迟到需要时加载 -->
   <link rel="preload" href="{pboot:sitetplpath}/video.js-8.20.0/video-js.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link href="{pboot:sitetplpath}/video.js-8.20.0/video-js.min.css" rel="stylesheet"></noscript>
@@ -35,10 +34,10 @@
             <div class="swiper-slide">
                   {pboot:if([slide:link] != '')}
                   <a href="[slide:link]">
-                      <div class="swiper-img-wrapper"><img src="[slide:src]" fetchpriority="high"></div>
+                      <div class="swiper-img-wrapper"><img src="[slide:src]" fetchpriority="high" width="1920" height="650"></div>
                   </a>
                   {else}
-                  <div class="swiper-img-wrapper"><img src="[slide:src]" fetchpriority="high"></div>
+                  <div class="swiper-img-wrapper"><img src="[slide:src]" fetchpriority="high" width="1920" height="650"></div>
                   {/pboot:if}                
                   <div class="container">
                       <div class="position-absolute text-light" style="top:30%;">
@@ -200,6 +199,7 @@
   </div>
 </div>
 
+<script src="{pboot:sitetplpath}/js/jquery-1.12.4.min.js"></script>
 <script src="{pboot:sitetplpath}/swiper-4.3.5/js/swiper.min.js"></script>
 <!-- video.js 延迟加载：滚动到视频区域时才加载 -->
 <script>
