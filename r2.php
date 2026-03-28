@@ -211,6 +211,37 @@ if ($action === 'replace_db') {
     $stmt->execute([$oldPrefix, $newPrefix, '%' . $oldPrefix . '%']);
     $replaced['ay_label.value'] = $stmt->rowCount();
 
+    // ===== 同时替换 /static/images/ =====
+    $oldPrefix2 = '/static/images/';
+    $newPrefix2 = $customDomain . '/' . $uploadPrefix . '/images/';
+
+    $tables2 = [
+        ['ay_content', 'ico'],
+        ['ay_content', 'content'],
+        ['ay_content', 'pics'],
+        ['ay_slide', 'pic'],
+        ['ay_content_sort', 'ico'],
+        ['ay_content_sort', 'pic'],
+        ['ay_content_sort', 'def1'],
+        ['ay_content_sort', 'def2'],
+        ['ay_content_sort', 'def3'],
+        ['ay_site', 'logo'],
+        ['ay_link', 'logo'],
+        ['ay_label', 'value'],
+    ];
+
+    foreach ($tables2 as $item) {
+        $table = $item[0];
+        $col = $item[1];
+        $stmt = $pdo->prepare("UPDATE {$table} SET {$col} = REPLACE({$col}, ?, ?) WHERE {$col} LIKE ?");
+        $stmt->execute([$oldPrefix2, $newPrefix2, '%' . $oldPrefix2 . '%']);
+        $cnt = $stmt->rowCount();
+        if ($cnt > 0) {
+            $key = "{$table}.{$col}(images)";
+            $replaced[$key] = $cnt;
+        }
+    }
+
     echo json_encode([
         'success' => true,
         'old_prefix' => $oldPrefix,
