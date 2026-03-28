@@ -1,0 +1,46 @@
+﻿<!doctype html>
+<html lang="zh">
+<head>
+	<meta charset="utf-8">
+	<title>{pboot:pagetitle}</title>
+	<meta name="keywords" content="{pboot:pagekeywords}">
+	<meta name="description" content="{pboot:pagedescription}">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,shrink-to-fit=no">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/bootstrap/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="{pboot:sitetplpath}/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/aoyun.css?v=v1.3.5" >
+	<link rel="stylesheet" href="{pboot:sitetplpath}/swiper-4.3.5/css/swiper.min.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/animate.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/custom.css">
+	<link rel="shortcut icon" href="{pboot:sitepath}/favicon.ico" type="image/x-icon">
+	<script src="{pboot:sitetplpath}/js/jquery-1.12.4.min.js" ></script>
+</head>
+<body>
+	
+	
+{include file=comm/head.html}
+
+{include file=comm/top.html}
+
+<div class="container pages">
+
+	{include file=comm/position.html}
+	
+	<h2 class="text-center fs-sm-28 fs-24">{content:title}</h2>
+    <div class="text-center border-bottom text-secondary pb-2 mb-3">
+    	  时间：{content:date style=Y-m-d}&nbsp;&nbsp;&nbsp;访问量：{content:visits}
+    </div>
+	<div class="content mb-3">{content:content}</div>
+	
+	<div class="text-secondary lh-2">
+		<p>上一篇：{content:precontent}</p>
+		<p>下一篇：{content:nextcontent}</p>
+	</div>
+</div>
+
+{include file=comm/comment.html}
+
+{include file=comm/foot.html}
+
+</body>
+</html>

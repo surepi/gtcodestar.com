@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh">
+<head>
+	<meta charset="utf-8">
+	<title>{pboot:pagetitle}</title>
+	<meta name="keywords" content="{pboot:pagekeywords}">
+	<meta name="description" content="{pboot:pagedescription}">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,shrink-to-fit=no">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/bootstrap/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="{pboot:sitetplpath}/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/aoyun.css?v=v1.3.5" >
+	<link rel="stylesheet" href="{pboot:sitetplpath}/swiper-4.3.5/css/swiper.min.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/animate.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/custom.css">
+	<link rel="shortcut icon" href="{pboot:sitepath}/favicon.ico" type="image/x-icon">
+	<script src="{pboot:sitetplpath}/js/jquery-1.12.4.min.js" ></script>
+</head>
+<body id="productlist">
+	
+   
+{include file=comm/head.html}
+
+
+{include file=comm/top.html}
+
+<div class="container pages">
+
+	<!-- 分类导航 -->
+	<div class="text-center mt-4 mb-2 sonsort category">
+		<div class="row">
+			<div class="col-1">
+
+			</div>
+			<div class="col-10">
+				{pboot:nav num=10 parent={sort:tcode}}
+					{pboot:if([nav:i]==1)}
+						{pboot:2if('{sort:scode}'=='{sort:tcode}')}
+							<a href="{sort:toplink}" class="btn-active">All Products</a>
+						{2else}
+							<a href="{sort:toplink}">All Products</a>
+						{/pboot:2if}
+					{/pboot:if}
+					
+					{pboot:if('[nav:scode]'=='{sort:scode}')}
+						<a href="[nav:link]" class="btn-active">[nav:name]</a>
+					{else}
+						<a href="[nav:link]">[nav:name]</a>
+					{/pboot:if}
+				{/pboot:nav}
+			</div>
+			<div class="col-1">
+
+			</div>
+		</div>      
+		
+	</div>
+      
+	<!-- 图文列表 -->
+	
+    <div class="row product">
+        {pboot:list num=6 order=sorting}
+            <div class="col-12 col-sm-6 col-lg-4 product-box">
+              <div class="card">
+                  <div class="card-img"><a href="[list:link]"><img class="card-img-top" src="[list:ico]" alt="[list:title]"></a></div>
+                  <div class="card-body">
+                    <h5 class="card-title"><a href="[list:link]">[list:title lencn=15]</a></h5>
+                    <p class="card-text">[list:ext_description drophtml=1 dropblank=1 lencn=20]</p>
+                  </div>
+               </div>
+         	</div>
+        {/pboot:list}
+    </div>
+
+ 	{include file=comm/page.html}
+
+</div>
+
+{include file=comm/foot.html}
+
+</body>
+</html>

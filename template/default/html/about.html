@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh">
+<head>
+	<meta charset="utf-8">
+	<title>{pboot:pagetitle}</title>
+	<meta name="keywords" content="{pboot:pagekeywords}">
+	<meta name="description" content="{pboot:pagedescription}">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,shrink-to-fit=no">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/bootstrap/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="{pboot:sitetplpath}/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/aoyun.css?v=v1.3.5" >
+	<link rel="stylesheet" href="{pboot:sitetplpath}/swiper-4.3.5/css/swiper.min.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/animate.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/custom.css">
+	<link rel="shortcut icon" href="{pboot:sitepath}/favicon.ico" type="image/x-icon">
+	<script src="{pboot:sitetplpath}/js/jquery-1.12.4.min.js" ></script>
+	<link href="{pboot:sitetplpath}/video.js-8.20.0/video-js.min.css" rel="stylesheet">
+	<script src="{pboot:sitetplpath}/video.js-8.20.0/video.min.js"></script>
+</head>
+<body id="about">
+	
+
+{include file=comm/head.html}
+
+
+{include file=comm/top.html}
+
+
+<div class="about">
+	<div>
+		<div class="container">
+			<div class="row tab-head">
+				<ul>
+					<li tab-data="company"><a class="active" href="">Company Profile</a></li>
+					<li tab-data="certifications"><a class="" href="">Certifications</a></li>
+				</ul>
+			</div>	
+		</div>
+		<div>
+			<div id="company" class="row tab-body">
+				<div class="container">
+					<div class="row performance">
+						<div class="col-3">
+							<p>2009</p>
+							<p>Established</p>
+						</div>
+						<div class="col-3">
+							<p>15+ Years</p>
+							<p>R&D Experience</p>
+						</div>
+						<div class="col-3">
+							<p>100+</p>
+							<p>Countries</p>
+						</div>
+						<div class="col-3">
+							<p>10,000+</p>
+							<p>OEM&ODM Clients</p>
+						</div>
+					</div>
+				
+					<div class="row company">
+						<div class="col-1 col-md-1"></div>
+						<div class="col-10 col-md-7">
+							<div>{content:content}</div>							
+						</div>
+						<div class="col-0 col-md-4">
+							<div class="mb-2"><img src="static/images/about_en/1.jpg" height="200"/></div>
+							<div><img src="static/images/about_en/2.jpg" height="200"/></div>
+						</div>
+						<div class="col-1"></div>
+					</div>
+				</div>
+				<div class="container-fluid mt-4">
+					<div class="row d-flex justify-content-center">         
+						<div class="video-box">
+						  <img src="static/images/about_en/3.jpg" width="1918" height="509">
+						  <div class="video">    
+							<video id="example_video_2" class="text-center video-js vjs-theme-city" controls preload="none" width="634" height="408" poster="static/images/about_en/4.jpg" data-setup="{}">
+							  <source src="{label:app_tv_3}" type="video/mp4">
+							  <track kind="captions" src="{pboot:sitetplpath}/video.js-8.20.0/example-captions.vtt" srclang="en" label="English">
+							  <track kind="subtitles" src="{pboot:sitetplpath}/video.js-8.20.0/example-captions.vtt" srclang="en" label="English">
+							  <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+							  </video>
+						  </div>						  
+						  <div class="pic">
+							<div><img src="static/images/about_en/5.png" height="118"/></div>
+							<div><img src="static/images/about_en/6.png" height="118"/></div>
+							<div><img src="static/images/about_en/7.png" height="118"/></div>
+						  </div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+			<div id="certifications" class="row tab-body" style="display: none;">
+				<div class="container gallery wow zoomIn" data-wow-delay="200ms" data-wow-duration="1s">
+					<div class="row">
+						<div class="content" id="ajax_content"></div>
+					</div>
+					<div class="row justify-content-center">
+						<div class="pager" id="ajax_pager"></div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script>
+function loadNews(pageIndex) {
+	$.ajax({
+		type: 'POST',
+		url: '{label:app_host}/api.php?p=/GetData/news&num=6&order=id desc&scode=5&page=' + pageIndex,
+		dataType: 'json',
+		data: {
+			page: pageIndex
+		},
+		success: function (response, status) {
+			if (response.code) {
+				$("#ajax_content").empty();
+				var size = response.data.length
+				totalPages = response.totalPages
+				currentPage = response.pageIndex
+				var conhtml = '<div class="row">';
+				for (var i = 0; i < size; i++) {
+					var link = "/?list_" + response.data[i].scode + "/" + response.data[i].id + ".html";
+					var str = '<div class="col-12 col-md-4 mb-4 text-center"><img src="' + response.data[i].ico + '" width="270" height="380"/></div>';
+					conhtml += str
+				}
+				conhtml += '</div>';
+				$("#ajax_content").html(conhtml)
+				updatePagination(totalPages, pageIndex);
+			} else {
+
+			}
+		},
+		error: function (xhr, status, error) {
+		}
+	});
+}
+
+function updatePagination(totalPages, currentPage) {
+	$('#ajax_pager').empty();
+	var pageHtml = '<nav aria-label="Page navigation"><ul class="pagination justify-content-center">';
+	if (currentPage > 1) {
+		pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews(' + (currentPage - 1) + ')">Prev</a></li>';
+	} else {
+		pageHtml += '<li class="page-item disabled"><a class="page-link" href="javascript:;" onclick="loadNews(' + (currentPage - 1) + ')">Prev</a></li>';
+	}
+	let startPage, endPage;
+	let maxNums = 3;
+	let halfNums = Math.floor(maxNums / 2);
+	if (currentPage === 1) {
+		startPage = 1;
+		endPage = Math.min(maxNums, totalPages);
+	} else if (currentPage === totalPages) {
+		startPage = Math.max(totalPages - (maxNums -1), 1);
+		endPage = totalPages;
+	} else {
+		startPage = currentPage - halfNums;
+		endPage = currentPage + halfNums;
+		if (startPage < 1) {
+			startPage = 1;
+			endPage = Math.min(maxNums, totalPages);
+		}
+		if (endPage > totalPages) {
+			endPage = totalPages;
+			startPage = Math.max(totalPages -  (maxNums - 1), 1);
+		}
+	}
+
+	console.log(currentPage, totalPages, startPage, endPage)
+	for (let i = startPage; i <= endPage; i++) {
+		console.log(i)
+	}
+	for (let i = startPage; i <= endPage; i++) {
+		if (i === currentPage) {
+			pageHtml += '<li class="page-item active"><span class="page-link">' + i + '</span></li>';
+		} else {
+			pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews(' + i + ')">' + i + '</a></li>';
+		}
+	}
+	if (currentPage < totalPages) {
+		pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews(' + (currentPage + 1) + ')">Next</a></li>';
+	} else {
+		pageHtml += '<li class="page-item disabled"><a class="page-link" href="javascript:;" onclick="loadNews(' + (currentPage + 1) + ')">Next</a></li>';
+	}
+	pageHtml += '</ul></nav>';
+	$('#ajax_pager').html(pageHtml);
+}
+
+let currentPage = 1;
+loadNews(currentPage);
+</script>
+
+
+<script>
+	$(document).ready(function() {
+		$('.tab-head li').click(function(e) {
+			e.preventDefault();
+			$('.tab-head li a').removeClass('active');		
+			$(this).find('a').addClass('active');
+			var tab = $(this).attr("tab-data")
+			$("#company").hide();	
+			$("#certifications").hide();	
+			$("#"+tab).show();
+		});
+  	});
+</script>
+
+{include file=comm/foot.html}
+
+</body>
+</html>

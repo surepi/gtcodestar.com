@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh">
+<head>
+	<meta charset="utf-8">
+	<title>{pboot:pagetitle}</title>
+	<meta name="keywords" content="{pboot:pagekeywords}">
+	<meta name="description" content="{pboot:pagedescription}">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,shrink-to-fit=no">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/bootstrap/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="{pboot:sitetplpath}/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/aoyun.css?v=v1.3.5" >
+	<link rel="stylesheet" href="{pboot:sitetplpath}/swiper-4.3.5/css/swiper.min.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/animate.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/custom.css">
+	<link rel="shortcut icon" href="{pboot:sitepath}/favicon.ico" type="image/x-icon">
+	<script src="{pboot:sitetplpath}/js/jquery-1.12.4.min.js" ></script>
+</head>
+<body>
+	
+   
+{include file=comm/head.html}
+
+{include file=comm/top.html}
+
+<div class="container pages">
+
+	{include file=comm/position.html}
+
+     <div class="row">
+        {pboot:search num=12 order=sorting scode=5 field='title|content'}
+            <div class="col-12 col-sm-6 col-lg-3">
+              <div class="card">
+                  <div class="card-img-150"><a href="[search:link]"><img class="card-img-top" src="[search:ico]" alt="[search:title]"></a></div>
+                  <div class="card-body">
+                    <h5 class="card-title"><a href="[search:link]">[search:title len=12 mark=1]</a></h5>
+                    <p class="card-text">[search:content drophtml=1 dropblank=1 len=50 mark=1]</p>
+                  </div>
+               </div>
+         	</div>
+        {/pboot:search}
+    </div>
+
+    <!-- 分页 -->
+    {pboot:if({page:rows}>0)}
+	   <nav aria-label="page navigation" class="my-4">
+	     <div class="pagination justify-content-center">
+	     	<a class="page-item page-link" href="{page:index}">首页</a>
+	     	<a class="page-item page-link" href="{page:pre}">上一页</a>
+	      	{page:numbar}<!-- 数字条，小屏幕时自动隐藏-->
+	      	<a class="page-item page-link" href="{page:next}">下一页</a>
+	      	<a class="page-item page-link" href="{page:last}">尾页</a>
+	     </div>
+	   </nav>	
+	{else}
+	   	<div class="text-center my-5 text-secondary">未搜索到任何数据！</div>
+	{/pboot:if}
+    
+     <!-- 搜索-->
+     <form class="form-inline mb-5 justify-content-center" action="{pboot:scaction}"  method="get">
+		  <div class="form-group mx-sm-3 mb-2">
+		    <input type="text" name="keyword" class="form-control" placeholder="请输入关键字">
+		  </div>
+		  <button type="submit" class="btn btn-info mb-2">搜索</button>
+     </form>
+</div>
+
+{include file=comm/foot.html}
+
+</body>
+</html>

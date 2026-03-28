@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh">
+<head>
+	<meta charset="utf-8">
+	<title>{pboot:pagetitle}</title>
+	<meta name="keywords" content="{pboot:pagekeywords}">
+	<meta name="description" content="{pboot:pagedescription}">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,shrink-to-fit=no">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/bootstrap/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="{pboot:sitetplpath}/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/aoyun.css?v=v1.3.5" >
+	<link rel="stylesheet" href="{pboot:sitetplpath}/swiper-4.3.5/css/swiper.min.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/animate.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/css/custom.css">
+	<link rel="shortcut icon" href="{pboot:sitepath}/favicon.ico" type="image/x-icon">
+	<script src="{pboot:sitetplpath}/js/jquery-1.12.4.min.js" ></script>
+	<script src="{pboot:sitetplpath}/js/common.js" ></script>
+</head>
+<body id="newslist">
+	
+{include file=comm/head.html}
+
+
+{include file=comm/top.html}
+
+<!--新闻资讯-->
+<div class="news">
+	<div class="container">
+		<div class="row mb-3">
+			<div class="title"><div class="line"></div><h2>Company News</h2></div>
+			<div class="divider"></div>
+		</div>
+		<div class="row">
+			<div class="content" id="ajax_content"></div>
+		</div>
+		<div class="row justify-content-center">
+			<div class="pager" id="ajax_pager"></div>
+		</div>
+	</div>
+</div>
+<script>
+function loadNews(pageIndex) {
+	$.ajax({
+		type: 'POST',
+		url: '{label:app_host}/api.php?p=/GetData/news&num=3&order=id desc&scode=2&page=' + pageIndex,
+		dataType: 'json',
+		data: {
+			page: pageIndex
+		},
+		success: function (response, status) {
+			if (response.code) {
+				$("#ajax_content").empty();
+				var size = response.data.length
+				totalPages = response.totalPages
+				currentPage = response.pageIndex
+				var conhtml = '<ul class="list-unstyled news-list">';
+				for (var i = 0; i < size; i++) {
+					var link = "/?list_" + response.data[i].scode + "/" + response.data[i].id + ".html";
+					var str = '<li class="media border-bottom p-3">' +
+						'<a class="mr-3" href="' + link + '" target="_blank" ><img src="' + response.data[i].ico + '" width="130" height="90"></a>' +
+						'<div class="media-body">' +
+						'    <a href="' + link + '" target="_blank"><h5 class="mt-0 mb-1">' + response.data[i].title + '</h5></a>' +
+						'    <p>' + response.data[i].ext_news_description + '</p>' +
+						'    <span class="date">' + response.data[i].date + '</span>' +
+						'</div>' +
+						'</li>';
+					conhtml += str
+				}
+				conhtml += '</ul>';
+				$("#ajax_content").html(conhtml)
+				updatePagination(totalPages, pageIndex);
+			} else {
+			}
+		},
+		error: function (xhr, status, error) {
+		}
+	});
+}
+
+// 更新分页组件
+function updatePagination(totalPages, currentPage) {
+	$('#ajax_pager').empty();
+	var pageHtml = '<nav aria-label="Page navigation"><ul class="pagination justify-content-center">';
+	if (currentPage > 1) {
+		pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews(' + (currentPage - 1) + ')">Prev</a></li>';
+	} else {
+		pageHtml += '<li class="page-item disabled"><a class="page-link" href="javascript:;" onclick="loadNews(' + (currentPage - 1) + ')">Prev</a></li>';
+	}
+	let startPage, endPage;
+	let maxNums = 3;
+	let halfNums = Math.floor(maxNums / 2);
+	if (currentPage === 1) {
+		startPage = 1;
+		endPage = Math.min(maxNums, totalPages);
+	} else if (currentPage === totalPages) {
+		startPage = Math.max(totalPages - (maxNums -1), 1);
+		endPage = totalPages;
+	} else {
+		startPage = currentPage - halfNums;
+		endPage = currentPage + halfNums;
+		if (startPage < 1) {
+			startPage = 1;
+			endPage = Math.min(maxNums, totalPages);
+		}
+		if (endPage > totalPages) {
+			endPage = totalPages;
+			startPage = Math.max(totalPages -  (maxNums - 1), 1);
+		}
+	}
+	for (let i = startPage; i <= endPage; i++) {
+		if (i === currentPage) {
+			pageHtml += '<li class="page-item active"><span class="page-link">' + i + '</span></li>';
+		} else {
+			pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews(' + i + ')">' + i + '</a></li>';
+		}
+	}
+	if (currentPage < totalPages) {
+		pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews(' + (currentPage + 1) + ')">Next</a></li>';
+	} else {
+		pageHtml += '<li class="page-item disabled"><a class="page-link" href="javascript:;" onclick="loadNews(' + (currentPage + 1) + ')">Next</a></li>';
+	}
+	pageHtml += '</ul></nav>';
+	$('#ajax_pager').html(pageHtml);
+}
+
+let currentPage = 1;
+loadNews(currentPage);
+</script>
+
+<!--新闻资讯-->
+<div class="gallery">
+	<div class="container">
+		<div class="row">
+			<div class="content" id="ajax_content2"></div>
+		</div>
+		<div class="row justify-content-center">
+			<div class="pager" id="ajax_pager2"></div>
+		</div>
+	</div>
+</div>
+<script>
+function loadNews2(pageIndex) {
+	$.ajax({
+		type: 'POST',
+		url: '{label:app_host}/api.php?p=/GetData/news&num=9&order=id desc&scode=4&page=' + pageIndex,
+		dataType: 'json',
+		data: {
+			page: pageIndex
+		},
+		success: function (response, status) {
+			if (response.code) {
+				$("#ajax_content2").empty();
+				var size = response.data.length
+				totalPages = response.totalPages
+				currentPage = response.pageIndex
+				var conhtml = '<div class="row">';
+				for (var i = 0; i < size; i++) {
+					var link = "/?list_" + response.data[i].scode + "/" + response.data[i].id + ".html";
+					var str = '<div class="col-12 col-md-4 mb-4"><a data-fancybox="gallery" data-src="' + response.data[i].ico + '" href=""><img src="' + response.data[i].ico + '" width="376" height="240"/></a></div>';
+					conhtml += str
+				}
+				conhtml += '</div>';
+				$("#ajax_content2").html(conhtml)
+				updatePagination2(totalPages, pageIndex);
+			} else {
+
+			}
+		},
+		error: function (xhr, status, error) {
+		}
+	});
+}
+
+function updatePagination2(totalPages, currentPage) {
+	$('#ajax_pager2').empty();
+	var pageHtml = '<nav aria-label="Page navigation"><ul class="pagination justify-content-center">';
+	if (currentPage > 1) {
+		pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews2(' + (currentPage - 1) + ')">Prev</a></li>';
+	} else {
+		pageHtml += '<li class="page-item disabled"><a class="page-link" href="javascript:;" onclick="loadNews2(' + (currentPage - 1) + ')">Prev</a></li>';
+	}
+	let startPage, endPage;
+	let maxNums = 3;
+	let halfNums = Math.floor(maxNums / 2);
+	if (currentPage === 1) {
+		startPage = 1;
+		endPage = Math.min(maxNums, totalPages);
+	} else if (currentPage === totalPages) {
+		startPage = Math.max(totalPages - (maxNums -1), 1);
+		endPage = totalPages;
+	} else {
+		startPage = currentPage - halfNums;
+		endPage = currentPage + halfNums;
+		if (startPage < 1) {
+			startPage = 1;
+			endPage = Math.min(maxNums, totalPages);
+		}
+		if (endPage > totalPages) {
+			endPage = totalPages;
+			startPage = Math.max(totalPages -  (maxNums - 1), 1);
+		}
+	}
+	for (let i = startPage; i <= endPage; i++) {
+		if (i === currentPage) {
+			pageHtml += '<li class="page-item active"><span class="page-link">' + i + '</span></li>';
+		} else {
+			pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews2(' + i + ')">' + i + '</a></li>';
+		}
+	}
+	if (currentPage < totalPages) {
+		pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews2(' + (currentPage + 1) + ')">Next</a></li>';
+	} else {
+		pageHtml += '<li class="page-item disabled"><a class="page-link" href="javascript:;" onclick="loadNews2(' + (currentPage + 1) + ')">Next</a></li>';
+	}
+	pageHtml += '</ul></nav>';
+	$('#ajax_pager2').html(pageHtml);
+}
+
+let currentPage2 = 1;
+loadNews2(currentPage2);
+</script>
+
+<link rel="stylesheet" href="{pboot:sitetplpath}/fancybox/ui-5.0.36/dist/fancybox/fancybox.css" />
+<script src="{pboot:sitetplpath}/fancybox/ui-5.0.36/dist/fancybox/fancybox.umd.js"></script>
+<script>
+	$(document).ready(function() {
+		Fancybox.bind('[data-fancybox="gallery"]', {				
+			Thumbs : {
+			type: "classic"
+			}
+		});    
+	})
+</script>
+
+{include file=comm/foot.html}
+
+</body>
+</html>
