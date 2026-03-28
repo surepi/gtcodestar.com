@@ -29,20 +29,6 @@ $r2 = new R2Storage();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 $uploadDir = ROOT_PATH . '/static/upload';
 
-/**
- * 规范化域名：无论填 https://xxx、http://xxx 还是 xxx，都返回 https://xxx
- */
-function normalizeDomain($domain) {
-    $domain = trim($domain);
-    if (empty($domain)) return '';
-    // 去掉已有的协议头
-    $domain = preg_replace('#^https?://#i', '', $domain);
-    // 去掉末尾斜杠
-    $domain = rtrim($domain, '/');
-    // 统一加 https://
-    return 'https://' . $domain;
-}
-
 header('Content-Type: text/html; charset=utf-8');
 
 // ========== 扫描文件 ==========
@@ -145,13 +131,17 @@ if ($action === 'replace_db') {
     $customDomain = '';
     $stmt = $pdo->query("SELECT value FROM ay_config WHERE name = 'r2_custom_domain'");
     if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $customDomain = normalizeDomain($row['value']);
+        $customDomain = trim($row['value']);
+        if ($customDomain && !preg_match('#^https?://#i', $customDomain)) {
+            $customDomain = 'https://' . $customDomain;
+        }
+        $customDomain = rtrim($customDomain, '/');
     }
     
     if (empty($customDomain)) {
         $stmt = $pdo->query("SELECT value FROM ay_config WHERE name = 'r2_account_id'");
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $customDomain = 'https://pub-' . trim($row['value'] ?? '') . '.r2.dev';
+        $customDomain = 'https://pub-' . ($row['value'] ?? '') . '.r2.dev';
     }
 
     $uploadPrefix = '';
