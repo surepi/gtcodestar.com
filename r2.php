@@ -27,7 +27,16 @@ require_once CORE_PATH . '/extend/R2Storage.php';
 
 $r2 = new R2Storage();
 $action = isset($_GET['action']) ? $_GET['action'] : '';
-$uploadDir = ROOT_PATH . '/static/upload';
+$dir = isset($_GET['dir']) ? $_GET['dir'] : 'upload';
+
+// 支持两个目录
+$dirMap = [
+    'upload' => ['path' => ROOT_PATH . '/static/upload', 'prefix' => ''],
+    'images' => ['path' => ROOT_PATH . '/static/images', 'prefix' => 'images/'],
+];
+if (!isset($dirMap[$dir])) $dir = 'upload';
+$uploadDir = $dirMap[$dir]['path'];
+$r2Prefix = $dirMap[$dir]['prefix'];
 
 header('Content-Type: text/html; charset=utf-8');
 
@@ -37,6 +46,7 @@ if ($action === 'scan') {
     echo json_encode([
         'total' => count($files),
         'size_mb' => round(array_sum(array_map('filesize', $files)) / 1024 / 1024, 1),
+        'dir' => $dir,
         'files' => array_map(function($f) use ($uploadDir) {
             return str_replace($uploadDir . '/', '', $f);
         }, $files)
@@ -72,11 +82,12 @@ if ($action === 'upload_batch') {
     $successCount = 0;
 
     foreach ($batch as $file) {
-        $relativePath = str_replace(ROOT_PATH . '/static/upload/', '', $file);
+        $relativePath = str_replace($uploadDir . '/', '', $file);
+        $r2ObjectName = $r2Prefix . $relativePath;
         $localSize = filesize($file);
 
         // 检查 R2 上是否已存在且大小一致，一致则跳过
-        $head = $r2->headObject($relativePath);
+        $head = $r2->headObject($r2ObjectName);
         if ($head['exists'] && $head['size'] == $localSize) {
             $results[] = [
                 'file' => $relativePath,
@@ -88,7 +99,7 @@ if ($action === 'upload_batch') {
             continue;
         }
 
-        $result = $r2->upload($file, $relativePath);
+        $result = $r2->upload($file, $r2ObjectName);
         $results[] = [
             'file' => $relativePath,
             'success' => $result['success'],
@@ -230,11 +241,12 @@ if ($action === 'compare_batch') {
     $missCount = 0;
 
     foreach ($batch as $file) {
-        $relativePath = str_replace(ROOT_PATH . '/static/upload/', '', $file);
+        $relativePath = str_replace($uploadDir . '/', '', $file);
+        $r2ObjectName = $r2Prefix . $relativePath;
         $localSize = filesize($file);
 
         // 用 HEAD 请求检查 R2 上是否存在且大小一致
-        $r2Check = $r2->headObject($relativePath);
+        $r2Check = $r2->headObject($r2ObjectName);
 
         if ($r2Check['exists'] && $r2Check['size'] == $localSize) {
             $results[] = [
@@ -296,11 +308,12 @@ if ($action === 'delete_batch') {
     $skippedCount = 0;
 
     foreach ($batch as $file) {
-        $relativePath = str_replace(ROOT_PATH . '/static/upload/', '', $file);
+        $relativePath = str_replace($uploadDir . '/', '', $file);
+        $r2ObjectName = $r2Prefix . $relativePath;
         $localSize = filesize($file);
 
         // 先确认 R2 上存在且大小一致
-        $r2Check = $r2->headObject($relativePath);
+        $r2Check = $r2->headObject($r2ObjectName);
 
         if ($r2Check['exists'] && $r2Check['size'] == $localSize) {
             // 安全删除本地文件
@@ -381,6 +394,16 @@ if ($action === 'delete_batch') {
     <h1>☁️ R2 存储一键迁移</h1>
 
     <div class="card">
+        <h2>选择目录</h2>
+        <div style="margin-bottom:8px">
+            <label><input type="radio" name="dir" value="upload" checked onchange="switchDir(this.value)"> <code>static/upload/</code>（上传文件）</label>
+            &nbsp;&nbsp;
+            <label><input type="radio" name="dir" value="images" onchange="switchDir(this.value)"> <code>static/images/</code>（模板图片）</label>
+        </div>
+        <div class="stats" id="dir-info"></div>
+    </div>
+
+    <div class="card">
         <h2>第一步：测试 R2 连接</h2>
         <p>确保后台「参数配置 → R2存储」已正确填写。</p>
         <button class="btn btn-primary" onclick="testR2()">测试连接</button>
@@ -436,6 +459,20 @@ if ($action === 'delete_batch') {
 </div>
 
 <script>
+/* ===== 目录切换 ===== */
+var currentDir = 'upload';
+
+function switchDir(d) {
+    currentDir = d;
+    fetch('?action=scan&dir=' + d).then(r => r.json()).then(data => {
+        document.getElementById('dir-info').innerHTML =
+            '当前目录: <code>static/' + d + '/</code> | 文件数: ' + data.total + ' | 大小: ' + data.size_mb + ' MB';
+    }).catch(e => {
+        document.getElementById('dir-info').innerHTML = '扫描失败';
+    });
+}
+switchDir('upload');
+
 /* ===== 上传 ===== */
 var uploading = false, uploadStopped = false;
 
@@ -468,7 +505,7 @@ function stopUpload() {
 }
 function uploadBatch(offset) {
     if (uploadStopped) return;
-    fetch('?action=upload_batch&offset=' + offset + '&limit=10').then(r => r.json()).then(d => {
+    fetch('?action=upload_batch&dir=' + currentDir + '&offset=' + offset + '&limit=10').then(r => r.json()).then(d => {
         var pct = Math.min(100, Math.round((offset + d.processed) / d.total * 100));
         setProgress('upload-fill', pct);
         document.getElementById('upload-stats').innerHTML =
@@ -535,7 +572,7 @@ function stopCompare() {
 }
 function compareBatch(offset) {
     if (compareStopped) return;
-    fetch('?action=compare_batch&offset=' + offset + '&limit=20').then(r => r.json()).then(d => {
+    fetch('?action=compare_batch&dir=' + currentDir + '&offset=' + offset + '&limit=20').then(r => r.json()).then(d => {
         var pct = Math.min(100, Math.round((offset + d.processed) / d.total * 100));
         setProgress('compare-fill', pct);
         compareMatchTotal += d.match_count;
@@ -595,7 +632,7 @@ function stopDelete() {
 }
 function deleteBatch() {
     if (deleteStopped) return;
-    fetch('?action=delete_batch&limit=20').then(r => r.json()).then(d => {
+    fetch('?action=delete_batch&dir=' + currentDir + '&limit=20').then(r => r.json()).then(d => {
         if (deleteTotal === 0) deleteTotal = d.total_before;
         deletedTotal += d.deleted;
         skippedTotal += d.skipped;
