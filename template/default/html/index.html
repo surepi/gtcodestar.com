@@ -10,12 +10,17 @@
 	<link rel="stylesheet" href="{pboot:sitetplpath}/font-awesome-4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="{pboot:sitetplpath}/css/aoyun.css?v=v1.3.5" >
 	<link rel="stylesheet" href="{pboot:sitetplpath}/swiper-4.3.5/css/swiper.min.css">
-	<link rel="stylesheet" href="{pboot:sitetplpath}/css/animate.css">
+	<link rel="preload" href="{pboot:sitetplpath}/css/animate.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+	<noscript><link rel="stylesheet" href="{pboot:sitetplpath}/css/animate.css"></noscript>
 	<link rel="stylesheet" href="{pboot:sitetplpath}/css/custom.css">
 	<link rel="shortcut icon" href="{pboot:sitepath}/favicon.ico" type="image/x-icon">
+	<!-- 预连接 R2 CDN -->
+	<link rel="preconnect" href="https://r2.gtcodestar.com.cn" crossorigin>
+	<link rel="dns-prefetch" href="https://r2.gtcodestar.com.cn">
 	<script src="{pboot:sitetplpath}/js/jquery-1.12.4.min.js" ></script>
-  <link href="{pboot:sitetplpath}/video.js-8.20.0/video-js.min.css" rel="stylesheet">
-  <script src="{pboot:sitetplpath}/video.js-8.20.0/video.min.js"></script>
+  <!-- video.js 延迟到需要时加载 -->
+  <link rel="preload" href="{pboot:sitetplpath}/video.js-8.20.0/video-js.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="{pboot:sitetplpath}/video.js-8.20.0/video-js.min.css" rel="stylesheet"></noscript>
 </head>
 <body id="home">
 	
@@ -79,7 +84,7 @@
       <div class="row d-flex justify-content-center about-box">
         <div class="col-1"></div>
           <div class="col-12 col-sm-12 col-lg-5 pic">
-            <img class="center-block img-fluid" src="{label:r2_domain}/images/home_en/about/1.jpg"/>            
+            <img loading="lazy" class="center-block img-fluid" src="{label:r2_domain}/images/home_en/about/1.jpg"/>            
           </div>          
           <div class="col-12 col-sm-12 col-lg-6 content">
               <div class="content-box">
@@ -114,23 +119,23 @@
       <div class="title"><h3>Certifications</h3></div>
     </div>
     <div class="row d-flex justify-content-center">
-      <img class="center-block img-fluid" src="{label:r2_domain}/images/home_en/certifications/0.png"/>
+      <img loading="lazy" class="center-block img-fluid" src="{label:r2_domain}/images/home_en/certifications/0.png"/>
     </div>
     <div class="row d-flex justify-content-center" style="width: 1920px; text-align: center; margin: auto;">
       <div id="marquee-box">
         <div id="marquee-con">
           <div id="marquee-1"></div>
           <div id="marquee" class="d-flex justify-content-between">
-              <img src="{label:r2_domain}/images/home_en/certifications/1.jpg" class="marquee-img" width="240" height="350" />
-              <img src="{label:r2_domain}/images/home_en/certifications/2.jpg" class="marquee-img" width="240" height="350" />
-              <img src="{label:r2_domain}/images/home_en/certifications/3.jpg" class="marquee-img" width="240" height="350" />
-              <img src="{label:r2_domain}/images/home_en/certifications/4.jpg" class="marquee-img" width="240" height="350" />
-              <img src="{label:r2_domain}/images/home_en/certifications/5.jpg" class="marquee-img" width="240" height="350" />
-              <img src="{label:r2_domain}/images/home_en/certifications/6.jpg" class="marquee-img" width="240" height="350" />
-              <img src="{label:r2_domain}/images/home_en/certifications/7.jpg" class="marquee-img" width="240" height="350" />
-              <img src="{label:r2_domain}/images/home_en/certifications/8.jpg" class="marquee-img" width="240" height="350" />
-              <img src="{label:r2_domain}/images/home_en/certifications/9.jpg" class="marquee-img" width="240" height="350" />
-              <img src="{label:r2_domain}/images/home_en/certifications/10.jpg" class="marquee-img" width="240" height="350" />
+              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/1.jpg" class="marquee-img" width="240" height="350" />
+              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/2.jpg" class="marquee-img" width="240" height="350" />
+              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/3.jpg" class="marquee-img" width="240" height="350" />
+              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/4.jpg" class="marquee-img" width="240" height="350" />
+              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/5.jpg" class="marquee-img" width="240" height="350" />
+              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/6.jpg" class="marquee-img" width="240" height="350" />
+              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/7.jpg" class="marquee-img" width="240" height="350" />
+              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/8.jpg" class="marquee-img" width="240" height="350" />
+              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/9.jpg" class="marquee-img" width="240" height="350" />
+              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/10.jpg" class="marquee-img" width="240" height="350" />
           </div>
       </div>
     </div>    
@@ -170,14 +175,14 @@
       </div>
       <div>
         <div class="row d-flex justify-content-center">
-          <img src="{label:r2_domain}/images/home_en/exhibition/1.png" class="img-fluid" width="1234" height="502">
+          <img loading="lazy" src="{label:r2_domain}/images/home_en/exhibition/1.png" class="img-fluid" width="1234" height="502">
         </div>
         <div class="row d-flex justify-content-center">
-          <img src="{label:r2_domain}/images/home_en/exhibition/2.jpg" class="img-fluid" width="1918" height="200">
+          <img loading="lazy" src="{label:r2_domain}/images/home_en/exhibition/2.jpg" class="img-fluid" width="1918" height="200">
         </div>
         <div class="row d-flex justify-content-center">
           <div class="video-box">
-            <img src="{label:r2_domain}/images/home_en/exhibition/3.jpg" class="img-fluid" width="1918" height="617">
+            <img loading="lazy" src="{label:r2_domain}/images/home_en/exhibition/3.jpg" class="img-fluid" width="1918" height="617">
             <div class="video">    
               <video id="example_video_2" class="text-center video-js vjs-theme-city" controls preload="none" width="780" height="445" poster="{label:r2_domain}/images/home_en/exhibition/5.jpg" data-setup="{}">
                 <source src="{label:app_tv_2}" type="video/mp4">
@@ -189,13 +194,30 @@
           </div>
         </div>
         <div class="row d-flex justify-content-center">
-          <img src="{label:r2_domain}/images/home_en/exhibition/4.png" class="img-fluid" width="1234" height="233">
+          <img loading="lazy" src="{label:r2_domain}/images/home_en/exhibition/4.png" class="img-fluid" width="1234" height="233">
         </div>
       </div>
   </div>
 </div>
 
 <script src="{pboot:sitetplpath}/swiper-4.3.5/js/swiper.min.js"></script>
+<!-- video.js 延迟加载：滚动到视频区域时才加载 -->
+<script>
+var vjsLoaded=false;
+function loadVideoJS(){
+  if(vjsLoaded)return;vjsLoaded=true;
+  var s=document.createElement('script');
+  s.src='{pboot:sitetplpath}/video.js-8.20.0/video.min.js';
+  document.body.appendChild(s);
+}
+// 滚动到 about 区域时加载，或 5 秒后加载
+var vObs=new IntersectionObserver(function(e){
+  if(e[0].isIntersecting){loadVideoJS();vObs.disconnect();}
+});
+var aboutEl=document.querySelector('.about');
+if(aboutEl)vObs.observe(aboutEl);
+setTimeout(loadVideoJS,5000);
+</script>
 <script>        
   var mySwiper = new Swiper ('.swiper-container', {
     direction: 'horizontal',
