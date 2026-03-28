@@ -1,3 +1,10 @@
 User-agent: *
 Allow: /
-Disallow: /ad*
+Disallow: /admin.php
+Disallow: /api.php
+Disallow: /r2.php
+Disallow: /runtime/
+Disallow: /config/
+Disallow: /core/
+
+Sitemap: https://www.gtcodestar.com/sitemap.xml

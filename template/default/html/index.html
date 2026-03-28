@@ -1,11 +1,24 @@
 <!doctype html>
-<html lang="zh">
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<title>{pboot:pagetitle}</title>
 	<meta name="keywords" content="{pboot:pagekeywords}">
 	<meta name="description" content="{pboot:pagedescription}">
 	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,shrink-to-fit=no">
+	<link rel="canonical" href="{label:app_host}/">
+	<!-- Open Graph -->
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="{pboot:pagetitle}">
+	<meta property="og:description" content="{pboot:pagedescription}">
+	<meta property="og:url" content="{label:app_host}/">
+	<meta property="og:site_name" content="{pboot:companyname}">
+	<meta property="og:image" content="{pboot:sitelogo}">
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="{pboot:pagetitle}">
+	<meta name="twitter:description" content="{pboot:pagedescription}">
+	<meta name="robots" content="index, follow">
 	<link rel="stylesheet" href="{pboot:sitetplpath}/bootstrap/css/bootstrap.min.css" >
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="{pboot:sitetplpath}/css/aoyun.css?v=v1.3.5" >
@@ -239,6 +252,43 @@ setTimeout(loadVideoJS,5000);
 </script>
   
 {include file=comm/foot.html}
+
+<!-- 结构化数据 -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "{pboot:companyname}",
+  "url": "{label:app_host}",
+  "logo": "{pboot:sitelogo}",
+  "description": "{pboot:pagedescription}",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Foshan",
+    "addressCountry": "CN"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "{pboot:companyphone}",
+    "email": "{pboot:companyemail}",
+    "contactType": "sales"
+  },
+  "sameAs": []
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "{pboot:companyname}",
+  "url": "{label:app_host}",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{label:app_host}/?search/&keyword={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
 
 </body>
 </html>
