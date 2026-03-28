@@ -7,7 +7,7 @@
 	<meta name="description" content="{pboot:pagedescription}">
 	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,shrink-to-fit=no">
 	<link rel="stylesheet" href="{pboot:sitetplpath}/bootstrap/css/bootstrap.min.css" >
-	<link rel="stylesheet" href="{pboot:sitetplpath}/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="{pboot:sitetplpath}/css/aoyun.css?v=v1.3.5" >
 	<link rel="stylesheet" href="{pboot:sitetplpath}/swiper-4.3.5/css/swiper.min.css">
 	<link rel="preload" href="{pboot:sitetplpath}/css/animate.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -35,10 +35,10 @@
             <div class="swiper-slide">
                   {pboot:if([slide:link] != '')}
                   <a href="[slide:link]">
-                      <div class="swiper-img-wrapper"><img src="[slide:src]"></div>
+                      <div class="swiper-img-wrapper"><img src="[slide:src]" fetchpriority="high"></div>
                   </a>
                   {else}
-                  <div class="swiper-img-wrapper"><img src="[slide:src]"></div>
+                  <div class="swiper-img-wrapper"><img src="[slide:src]" fetchpriority="high"></div>
                   {/pboot:if}                
                   <div class="container">
                       <div class="position-absolute text-light" style="top:30%;">
@@ -64,7 +64,7 @@
        {pboot:list scode=3 num=6 order=date}
         <div class="col-12 col-sm-6 col-lg-4">
               <div class="card">
-                  <div class="card-img"><a href="[list:link]"><img class="card-img-top" src="[list:ico]" alt="[list:title]"></a></div>
+                  <div class="card-img"><a href="[list:link]"><img class="card-img-top" src="[list:ico]" alt="[list:title]" width="329" height="329" loading="lazy"></a></div>
                   <div class="card-body">
                     <h5 class="card-title"><a href="[list:link]">[list:title lencn=12]</a></h5>                    
                   </div>
