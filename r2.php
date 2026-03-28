@@ -242,6 +242,34 @@ if ($action === 'replace_db') {
         }
     }
 
+    // 清理所有表中 R2 URL 里的双斜杠（排除 https://）
+    $cleanTables = [
+        ['ay_content', 'ico'],
+        ['ay_content', 'content'],
+        ['ay_content', 'pics'],
+        ['ay_slide', 'pic'],
+        ['ay_content_sort', 'ico'],
+        ['ay_content_sort', 'pic'],
+        ['ay_site', 'logo'],
+        ['ay_link', 'logo'],
+    ];
+    $cleanCount = 0;
+    foreach ($cleanTables as $item) {
+        $table = $item[0];
+        $col = $item[1];
+        // 把 https://xxx.com//path 中间的 // 替换成 /（但保留 https:// 的 //）
+        $stmt = $pdo->prepare("UPDATE {$table} SET {$col} = REPLACE({$col}, '://', ':##TEMP##') WHERE {$col} LIKE ?");
+        $stmt->execute(['%' . $customDomain . '%']);
+        $stmt = $pdo->prepare("UPDATE {$table} SET {$col} = REPLACE({$col}, '//', '/') WHERE {$col} LIKE ?");
+        $stmt->execute(['%' . str_replace('://', ':##TEMP##', $customDomain) . '%']);
+        $stmt = $pdo->prepare("UPDATE {$table} SET {$col} = REPLACE({$col}, ':##TEMP##', '://') WHERE {$col} LIKE ?");
+        $stmt->execute(['%##TEMP##%']);
+        $cleanCount += $stmt->rowCount();
+    }
+    if ($cleanCount > 0) {
+        $replaced['清理双斜杠'] = $cleanCount;
+    }
+
     echo json_encode([
         'success' => true,
         'old_prefix' => $oldPrefix,
