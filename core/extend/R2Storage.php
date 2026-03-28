@@ -302,6 +302,15 @@ class R2Storage
     }
 
     /**
+     * 获取公开访问 URL（外部调用）
+     */
+    public function getUrl($objectName)
+    {
+        $objectKey = $this->uploadPath . '/' . ltrim($objectName, '/');
+        return $this->getPublicUrl($objectKey);
+    }
+
+    /**
      * 获取公开访问 URL
      */
     private function getPublicUrl($objectKey)

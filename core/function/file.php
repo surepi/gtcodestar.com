@@ -356,11 +356,17 @@ function handle_upload($file, $temp, $array_ext_allow, $max_width, $max_height, 
             // 检查是否已存在，避免重复上传
             $head = $r2->headObject($r2ObjectName);
             if (!$head['exists'] || $head['size'] != filesize($file_path)) {
-                $r2->upload($file_path, $r2ObjectName);
+                $result = $r2->upload($file_path, $r2ObjectName);
+                if ($result['success'] && !empty($result['url'])) {
+                    return $result['url']; // 直接返回 R2 链接
+                }
+            } else {
+                // 已存在，直接返回 R2 链接
+                return $r2->getUrl($r2ObjectName);
             }
         }
     } catch (Exception $e) {
-        // R2 上传失败不影响本地上传
+        // R2 上传失败，回退返回本地路径
     }
 
     return $save_file;
