@@ -1,0 +1,10 @@
+<!-- 手机端分页 -->
+{pboot:if({page:rows}>0)}
+<div class="m-pager">
+	<a class="m-page-btn" href="{page:pre}">← Prev</a>
+	{page:numbar}
+	<a class="m-page-btn" href="{page:next}">Next →</a>
+</div>
+{else}
+<div class="m-empty">No Data</div>
+{/pboot:if}
