@@ -105,13 +105,16 @@ img{max-width:100%;height:auto}
 /* ===== 产品分类网格 ===== */
 .categories{padding:100px 0;background:#fff}
 .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.cat-card{position:relative;background:#f5f5f7;border-radius:16px;overflow:hidden;padding:40px 30px;min-height:200px;border:none;transition:all .4s;display:flex;flex-direction:column;justify-content:flex-end}
+.cat-card{position:relative;background:#f5f5f7;border-radius:16px;overflow:hidden;padding:0;min-height:260px;border:none;transition:all .4s;display:flex;flex-direction:column}
 .cat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,113,227,.05),transparent);opacity:0;transition:opacity .4s}
 .cat-card:hover::before{opacity:1}
 .cat-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,.08)}
-.cat-card h3{font-size:20px;font-weight:700;margin-bottom:8px;position:relative;z-index:1;color:#1d1d1f}
-.cat-card p{font-size:14px;color:#6e6e73;position:relative;z-index:1}
-.cat-card .cat-count{position:absolute;top:24px;right:24px;font-size:36px;font-weight:800;color:rgba(0,0,0,.04)}
+.cat-card .cat-thumb{height:180px;display:flex;align-items:center;justify-content:center;padding:20px;background:#fff}
+.cat-card .cat-thumb img{max-height:140px;max-width:100%;object-fit:contain;transition:transform .5s}
+.cat-card:hover .cat-thumb img{transform:scale(1.08)}
+.cat-card .cat-body{padding:20px 24px;flex:1;display:flex;flex-direction:column;justify-content:center}
+.cat-card h3{font-size:16px;font-weight:700;margin-bottom:6px;position:relative;z-index:1;color:#1d1d1f}
+.cat-card p{font-size:13px;color:#0071e3;position:relative;z-index:1}
 @media(max-width:768px){
 	.cat-grid{grid-template-columns:1fr}
 }
@@ -300,17 +303,21 @@ img{max-width:100%;height:auto}
 			<div class="subtitle">Solutions for every industry</div>
 		</div>
 		<div class="cat-grid">
-			{pboot:sort scode=3}
-			{pboot:nav num=6 parent=3}
+			{pboot:nav num=7 parent=3}
 			<a href="[nav:link]">
 				<div class="cat-card reveal">
-					<div class="cat-count">[nav:scode]</div>
-					<h3>[nav:name]</h3>
-					<p>View Products →</p>
+					<div class="cat-thumb">
+						{pboot:list scode=[nav:scode] num=1 order=date}
+						<img src="[list:ico]" alt="[nav:name]" loading="lazy">
+						{/pboot:list}
+					</div>
+					<div class="cat-body">
+						<h3>[nav:name]</h3>
+						<p>View Products →</p>
+					</div>
 				</div>
 			</a>
 			{/pboot:nav}
-			{/pboot:sort}
 		</div>
 	</div>
 </section>
