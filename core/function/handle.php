@@ -563,7 +563,11 @@ function is_multi_array($array)
 function is_mobile()
 {
     $os = get_user_os();
-    if ($os == 'Android' || $os == 'iPhone' || $os == 'Windows Phone' || $os == 'iPad') {
+    if ($os == 'Android' || $os == 'iPhone' || $os == 'Windows Phone') {
+        // iPad 走 PC 版（屏幕够大，PC 版有响应式）
+        if (stripos($_SERVER['HTTP_USER_AGENT'] ?? '', 'iPad') !== false) {
+            return false;
+        }
         return true;
     }
 }
