@@ -24,12 +24,12 @@ return array(
         'deny_bs' => 'MJ12bot,IE6,IE7'
     ),
 
-    // 缓存服务器配置
+    // 缓存服务器配置（从数据库读取，后台可切换）
     'cache' => array(
         'handler' => 'file'
     ),
 
-    // 会话缓存配置
+    // 会话缓存配置（从数据库读取，后台可切换）
     'session' => array(
         'handler' => 'file'
     ),

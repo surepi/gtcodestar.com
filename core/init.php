@@ -112,5 +112,44 @@ Check::checkPHP();//检查php版本
 Check::checkApp(); // 检查APP配置
 Check::checkBasicDir(); // 检查基础目录
 Check::checkSession();//检查session文件夹
+
+// 从数据库加载缓存配置（后台可切换本地/Redis）
+try {
+    $dbConf = require CONF_PATH . '/database.php';
+    $db = $dbConf['database'];
+    $pdo = new PDO("mysql:host={$db['host']};port={$db['port']};dbname={$db['dbname']};charset=utf8", $db['user'], $db['passwd']);
+    $stmt = $pdo->query("SELECT name, value FROM ay_config WHERE name LIKE 'cache_%' OR name LIKE 'session_%' OR name LIKE 'redis_%'");
+    $cacheConf = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $cacheConf[$row['name']] = $row['value'];
+    }
+    if (!empty($cacheConf['cache_handler']) && $cacheConf['cache_handler'] === 'redis') {
+        $redisHost = $cacheConf['redis_host'] ?? '127.0.0.1';
+        $redisDb = intval($cacheConf['redis_database'] ?? 0);
+        if (strpos($redisHost, '/') !== false) {
+            // socket 模式
+            Config::set('cache', ['handler' => 'redis', 'server' => ['socket' => $redisHost, 'database' => $redisDb]]);
+        } else {
+            $redisPort = intval($cacheConf['redis_port'] ?? 6379);
+            $redisPwd = $cacheConf['redis_password'] ?? '';
+            Config::set('cache', ['handler' => 'redis', 'server' => ['host' => $redisHost, 'port' => $redisPort, 'password' => $redisPwd, 'database' => $redisDb]]);
+        }
+    }
+    if (!empty($cacheConf['session_handler']) && $cacheConf['session_handler'] === 'redis') {
+        $redisHost = $cacheConf['redis_host'] ?? '127.0.0.1';
+        if (strpos($redisHost, '/') !== false) {
+            Config::set('session', ['handler' => 'redis', 'path' => $redisHost]);
+        } else {
+            $redisPort = intval($cacheConf['redis_port'] ?? 6379);
+            $redisPwd = $cacheConf['redis_password'] ?? '';
+            $path = "tcp://{$redisHost}:{$redisPort}";
+            if ($redisPwd) $path .= "?auth={$redisPwd}";
+            Config::set('session', ['handler' => 'redis', 'path' => $path]);
+        }
+    }
+} catch (Exception $e) {
+    // 数据库未就绪时静默，使用 config.php 的默认值
+}
+
 Basic::setSessionHandler();// 会话处理程序选择
 

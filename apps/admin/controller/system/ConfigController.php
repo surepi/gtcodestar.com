@@ -100,6 +100,9 @@ class ConfigController extends Controller
                 case 'r2':
                     success('修改成功！', url('/admin/Config/index' . get_tab('t10'), false));
                     break;
+                case 'cache':
+                    success('修改成功！', url('/admin/Config/index' . get_tab('t11'), false));
+                    break;
                 case 'upgrade':
                     success('修改成功！', url('/admin/Upgrade/index' . get_tab('t2'), false));
                     break;

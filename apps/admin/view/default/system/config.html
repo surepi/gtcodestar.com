@@ -13,6 +13,7 @@
 	    <li  lay-id="t8">标题样式</li>
 	    <li  lay-id="t9">会员配置</li>
 	    <li  lay-id="t10">R2存储</li>
+	    <li  lay-id="t11">缓存配置</li>
 	  </ul>
 		  <div class="layui-tab-content">
 		  	   <div class="layui-tab-item layui-show">
@@ -893,6 +894,71 @@
 		                <div class="layui-form-item">
 							 <div class="layui-input-block">
 							    <button class="layui-btn" lay-submit name="submit" value="r2">立即提交</button>
+							    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							 </div>
+						</div>
+	              </form>
+		  	   </div>
+
+		  	   <!-- 缓存配置 -->
+		  	   <div class="layui-tab-item">
+		  	   	   <form action="{url./admin/Config/index}" method="post" class="layui-form">
+			  	   	   <input type="hidden" name="formcheck" value="{$formcheck}">
+
+		                <div class="layui-form-item">
+		                     <label class="layui-form-label">缓存驱动</label>
+		                     <div class="layui-input-block">
+		                     	<input type="radio" name="cache_handler" value="file" {if(@[$configs.cache_handler.value]=='file'||![$configs.cache_handler.value])} checked="checked" {/if} title="本地文件">
+								<input type="radio" name="cache_handler" value="redis" {if(@[$configs.cache_handler.value]=='redis')} checked="checked" {/if} title="Redis">
+								<span class="layui-icon layui-icon-about tips" data-content="本地文件无需额外配置，Redis性能更好但需要安装Redis服务"></span>
+		                     </div>
+		                </div>
+
+		                <div class="layui-form-item">
+		                     <label class="layui-form-label">会话驱动</label>
+		                     <div class="layui-input-block">
+		                     	<input type="radio" name="session_handler" value="file" {if(@[$configs.session_handler.value]=='file'||![$configs.session_handler.value])} checked="checked" {/if} title="本地文件">
+								<input type="radio" name="session_handler" value="redis" {if(@[$configs.session_handler.value]=='redis')} checked="checked" {/if} title="Redis">
+		                     </div>
+		                </div>
+
+						<hr>
+						<div class="layui-form-item">
+		                     <label class="layui-form-label" style="color:#999">以下仅Redis时需填写</label>
+		                </div>
+
+		                <div class="layui-form-item">
+		                     <label class="layui-form-label">Redis地址</label>
+		                     <div class="layui-input-inline">
+		                     	<input type="text" name="redis_host" value="{$configs.redis_host.value}" placeholder="127.0.0.1 或 socket路径" class="layui-input">
+		                     </div>
+		                     <span class="layui-icon layui-icon-about tips" data-content="如果使用socket填路径如：/var/run/redis/redis.sock，否则填IP地址如：127.0.0.1"></span>
+		                </div>
+
+		                <div class="layui-form-item">
+		                     <label class="layui-form-label">Redis端口</label>
+		                     <div class="layui-input-inline">
+		                     	<input type="text" name="redis_port" value="{$configs.redis_port.value}" placeholder="6379（socket时留空）" class="layui-input">
+		                     </div>
+		                </div>
+
+		                <div class="layui-form-item">
+		                     <label class="layui-form-label">Redis密码</label>
+		                     <div class="layui-input-inline">
+		                     	<input type="password" name="redis_password" value="{$configs.redis_password.value}" placeholder="无密码留空" class="layui-input">
+		                     </div>
+		                </div>
+
+		                <div class="layui-form-item">
+		                     <label class="layui-form-label">Redis数据库</label>
+		                     <div class="layui-input-inline">
+		                     	<input type="text" name="redis_database" value="{$configs.redis_database.value}" placeholder="0（默认）" class="layui-input">
+		                     </div>
+		                </div>
+
+		                <div class="layui-form-item">
+							 <div class="layui-input-block">
+							    <button class="layui-btn" lay-submit name="submit" value="cache">立即提交</button>
 							    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
 							 </div>
 						</div>
