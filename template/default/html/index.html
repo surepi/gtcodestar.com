@@ -156,15 +156,15 @@ img{max-width:100%;height:auto}
 	.news-grid{grid-template-columns:1fr}
 }
 
-/* ===== 认证轮播 ===== */
+/* ===== 认证 Logo 墙 ===== */
 .cert-section{padding:100px 0;background:#fff;overflow:hidden}
-.cert-track-wrapper{position:relative;overflow:hidden;margin-top:50px}
-.cert-track{display:flex;gap:24px;animation:certScroll 30s linear infinite;width:max-content}
-.cert-track:hover{animation-play-state:paused}
-.cert-card{flex:0 0 260px;background:#f5f5f7;border-radius:16px;padding:20px;display:flex;align-items:center;justify-content:center;height:200px;transition:transform .3s,box-shadow .3s}
-.cert-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,.08)}
-.cert-card img{max-height:160px;max-width:100%;object-fit:contain}
-@keyframes certScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.cert-wall{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:50px}
+.cert-wall .cert-card{background:#f5f5f7;border-radius:16px;padding:24px;display:flex;align-items:center;justify-content:center;height:200px;opacity:0;transform:scale(.95);transition:opacity .8s ease,transform .8s ease}
+.cert-wall .cert-card.show{opacity:1;transform:scale(1)}
+.cert-wall .cert-card img{max-height:160px;max-width:100%;object-fit:contain}
+@media(max-width:768px){
+	.cert-wall{grid-template-columns:repeat(2,1fr)}
+}
 .gallery-section{padding:100px 0;background:#fff}
 .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:50px}
 .gallery-item{border-radius:12px;overflow:hidden;aspect-ratio:4/3;box-shadow:0 2px 8px rgba(0,0,0,.06)}
@@ -341,12 +341,10 @@ img{max-width:100%;height:auto}
 			<h2>Certifications</h2>
 			<div class="subtitle">Quality assured by international standards</div>
 		</div>
-	</div>
-	<div class="cert-track-wrapper">
-		<div class="cert-track" id="certTrack">
+		<div class="cert-wall" id="certWall">
 			{pboot:list scode=5 num=12 order=sorting}
-			<div class="cert-card">
-				<img src="[list:ico]" alt="[list:title]" loading="lazy">
+			<div class="cert-card" data-cert>
+				<img src="[list:ico]" alt="Certification [list:title]" loading="lazy">
 			</div>
 			{/pboot:list}
 		</div>
@@ -476,9 +474,27 @@ document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(function
 // Hero 幻灯片
 var slides=document.querySelectorAll('.hero-slide');
 
-// 证书无缝滚动：复制一份
-var certTrack=document.getElementById('certTrack');
-if(certTrack){certTrack.innerHTML+=certTrack.innerHTML;}
+// 证书 Logo 墙：每 3 秒切换一批（每次显示 4 张）
+var certCards=document.querySelectorAll('[data-cert]');
+if(certCards.length>0){
+	var perPage=4,certPage=0,totalPages=Math.ceil(certCards.length/perPage);
+	function showCertPage(p){
+		certCards.forEach(function(c,i){
+			c.classList.remove('show');
+			c.style.display='none';
+		});
+		var start=p*perPage;
+		for(var i=start;i<start+perPage&&i<certCards.length;i++){
+			certCards[i].style.display='flex';
+			setTimeout(function(el){el.classList.add('show')},50+((i-start)*100),certCards[i]);
+		}
+	}
+	showCertPage(0);
+	setInterval(function(){
+		certPage=(certPage+1)%totalPages;
+		showCertPage(certPage);
+	},3000);
+}
 if(slides.length>0){
 	slides[0].classList.add('active');
 	if(slides.length>1){
