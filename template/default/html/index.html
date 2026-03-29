@@ -69,7 +69,12 @@ img{max-width:100%;height:auto}
 .hero-slide.active{opacity:1}
 .hero-slide img{width:100%;height:100%;object-fit:cover}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.3) 0%,rgba(0,0,0,.6) 100%);z-index:1}
-.hero-content{position:relative;z-index:2;text-align:center;max-width:900px;padding:0 24px}
+.hero-content{position:relative;z-index:2;text-align:center;max-width:900px;padding:0 24px;transition:color .8s ease}
+.hero-content.dark-text{color:#1d1d1f}
+.hero-content.dark-text p{color:rgba(0,0,0,.6)}
+.hero-content.dark-text .hero-eyebrow{color:#0071e3}
+.hero-content.dark-text .btn-ghost{border-color:rgba(0,0,0,.3);color:#1d1d1f}
+.hero-content.dark-text .btn-ghost:hover{border-color:#1d1d1f;background:rgba(0,0,0,.05)}
 .hero-eyebrow{font-size:14px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#0071e3;margin-bottom:20px}
 .hero h1{font-size:clamp(36px,7vw,76px);font-weight:800;line-height:1.05;letter-spacing:-2px;margin-bottom:24px}
 .hero p{font-size:clamp(16px,2vw,21px);color:rgba(255,255,255,.65);line-height:1.6;max-width:600px;margin:0 auto 40px}
@@ -512,12 +517,48 @@ if(certCards.length>0){
 }
 if(slides.length>0){
 	slides[0].classList.add('active');
+	var heroContent=document.querySelector('.hero-content');
+
+	// 检测图片亮度，自动切换文字颜色
+	function detectBrightness(img){
+		try{
+			var canvas=document.createElement('canvas');
+			var ctx=canvas.getContext('2d');
+			canvas.width=50;canvas.height=50;
+			ctx.drawImage(img,0,0,50,50);
+			var data=ctx.getImageData(0,0,50,50).data;
+			var r=0,g=0,b=0,count=data.length/4;
+			for(var i=0;i<data.length;i+=4){r+=data[i];g+=data[i+1];b+=data[i+2]}
+			var brightness=(r/count*0.299+g/count*0.587+b/count*0.114);
+			return brightness;
+		}catch(e){return 0}
+	}
+
+	function updateTextColor(slide){
+		var img=slide.querySelector('img');
+		if(!img||!img.complete){return}
+		var brightness=detectBrightness(img);
+		if(brightness>150){
+			heroContent.classList.add('dark-text');
+		}else{
+			heroContent.classList.remove('dark-text');
+		}
+	}
+
+	// 首张图片加载完后检测
+	var firstImg=slides[0].querySelector('img');
+	if(firstImg){
+		if(firstImg.complete){updateTextColor(slides[0])}
+		else{firstImg.onload=function(){updateTextColor(slides[0])}}
+	}
+
 	if(slides.length>1){
 		var idx=0;
 		setInterval(function(){
 			slides[idx].classList.remove('active');
 			idx=(idx+1)%slides.length;
 			slides[idx].classList.add('active');
+			updateTextColor(slides[idx]);
 		},5000);
 	}
 }
