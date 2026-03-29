@@ -26,17 +26,12 @@ return array(
 
     // 缓存服务器配置
     'cache' => array(
-        'handler' => 'redis',
-        'server' => array(
-            'socket' => '/home/gtcodest75/.redis/redis.sock',
-            'database' => 0
-        )
+        'handler' => 'file'
     ),
 
     // 会话缓存配置
     'session' => array(
-        'handler' => 'redis',
-        'path' => '/home/gtcodest75/.redis/redis.sock'
+        'handler' => 'file'
     ),
 
     // 上传配置
