@@ -166,7 +166,9 @@ img{max-width:100%;height:auto}
 .cert-wall .cert-card.show{opacity:1;transform:scale(1)}
 .cert-wall .cert-card img{max-height:396px;max-width:100%;object-fit:contain}
 @media(max-width:768px){
-	.cert-wall{grid-template-columns:repeat(2,1fr)}
+	.cert-wall{grid-template-columns:repeat(2,1fr);gap:12px}
+	.cert-wall .cert-card{height:180px;padding:8px}
+	.cert-wall .cert-card img{max-height:160px}
 }
 .gallery-section{padding:100px 0;background:#fff}
 .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:50px}
