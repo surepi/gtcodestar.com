@@ -345,6 +345,10 @@ function handle_upload($file, $temp, $array_ext_allow, $max_width, $max_height, 
         if ($watermark) {
             watermark_img($file_path);
         }
+
+        // 图片转 WebP（减小体积 30-50%）
+        $file_path = convert_to_webp($file_path);
+        $save_file = str_replace(ROOT_PATH, '', $file_path);
     }
 
     // R2 云存储同步
@@ -352,7 +356,7 @@ function handle_upload($file, $temp, $array_ext_allow, $max_width, $max_height, 
         require_once CORE_PATH . '/extend/R2Storage.php';
         $r2 = new R2Storage();
         if ($r2->isEnabled()) {
-            $r2ObjectName = $file_type . '/' . date('Ymd') . '/' . basename($file_path);
+            $r2ObjectName = $file_type . '/' . date('Ymd') . '/' . basename($file_path);  // 用转换后的文件名
             // 检查是否已存在，避免重复上传
             $head = $r2->headObject($r2ObjectName);
             if (!$head['exists'] || $head['size'] != filesize($file_path)) {
@@ -370,6 +374,72 @@ function handle_upload($file, $temp, $array_ext_allow, $max_width, $max_height, 
     }
 
     return $save_file;
+}
+
+/**
+ * 将图片转换为 WebP 格式
+ * 支持 jpg/jpeg/png，转换后删除原文件
+ * 
+ * @param string $file_path 原图片路径
+ * @param int $quality WebP 质量 (0-100)
+ * @return string 转换后的文件路径（如果转换失败返回原路径）
+ */
+function convert_to_webp($file_path, $quality = 80)
+{
+    // 检查 WebP 支持
+    if (!function_exists('imagewebp')) {
+        return $file_path;
+    }
+
+    $ext = strtolower(pathinfo($file_path, PATHINFO_EXTENSION));
+    
+    // 只处理 jpg/jpeg/png
+    if (!in_array($ext, ['jpg', 'jpeg', 'png'])) {
+        return $file_path;
+    }
+
+    // 创建图像资源
+    switch ($ext) {
+        case 'jpg':
+        case 'jpeg':
+            $image = @imagecreatefromjpeg($file_path);
+            break;
+        case 'png':
+            $image = @imagecreatefrompng($file_path);
+            if ($image) {
+                // 保留 PNG 透明度
+                imagepalettetotruecolor($image);
+                imagealphablending($image, true);
+                imagesavealpha($image, true);
+            }
+            break;
+        default:
+            return $file_path;
+    }
+
+    if (!$image) {
+        return $file_path;
+    }
+
+    // 生成 WebP 文件路径
+    $webp_path = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $file_path);
+
+    // 转换为 WebP
+    if (imagewebp($image, $webp_path, $quality)) {
+        imagedestroy($image);
+        
+        // 只有 WebP 确实更小时才使用
+        if (filesize($webp_path) < filesize($file_path)) {
+            @unlink($file_path); // 删除原文件
+            return $webp_path;
+        } else {
+            @unlink($webp_path); // WebP 更大就删掉，保留原图
+            return $file_path;
+        }
+    }
+
+    imagedestroy($image);
+    return $file_path;
 }
 
 /**
