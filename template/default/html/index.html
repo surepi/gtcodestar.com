@@ -90,6 +90,10 @@ img{max-width:100%;height:auto}
 .section-title .subtitle{font-size:17px;color:#6e6e73;margin-top:12px}
 .scroll-container{display:flex;gap:20px;overflow-x:auto;padding:0 24px 20px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .scroll-container::-webkit-scrollbar{display:none}
+.swipe-hint{display:none;text-align:center;margin-top:16px;color:#6e6e73;font-size:13px;animation:swipeHint 2s ease infinite}
+.swipe-hint i{margin-right:4px}
+@keyframes swipeHint{0%,100%{opacity:.4;transform:translateX(0)}50%{opacity:1;transform:translateX(8px)}}
+@media(max-width:768px){.swipe-hint{display:block}}
 .product-card{flex:0 0 300px;scroll-snap-align:start;background:#fff;border-radius:20px;overflow:hidden;transition:transform .4s,box-shadow .4s;border:none;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.06)}
 .product-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 12px 40px rgba(0,0,0,.12)}
 .product-card .p-img{height:260px;display:flex;align-items:center;justify-content:center;padding:24px;background:#fafafa}
@@ -292,6 +296,7 @@ img{max-width:100%;height:auto}
 		</div>
 		{/pboot:list}
 	</div>
+	<div class="swipe-hint">Swipe for more →</div>
 	<div class="view-all reveal">
 		<a href="{label:app_host}/product/" class="btn-outline">View All Products →</a>
 	</div>
