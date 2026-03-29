@@ -156,7 +156,15 @@ img{max-width:100%;height:auto}
 	.news-grid{grid-template-columns:1fr}
 }
 
-/* ===== Gallery/展会 ===== */
+/* ===== 认证轮播 ===== */
+.cert-section{padding:100px 0;background:#fff;overflow:hidden}
+.cert-track-wrapper{position:relative;overflow:hidden;margin-top:50px}
+.cert-track{display:flex;gap:24px;animation:certScroll 30s linear infinite;width:max-content}
+.cert-track:hover{animation-play-state:paused}
+.cert-card{flex:0 0 260px;background:#f5f5f7;border-radius:16px;padding:20px;display:flex;align-items:center;justify-content:center;height:200px;transition:transform .3s,box-shadow .3s}
+.cert-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,.08)}
+.cert-card img{max-height:160px;max-width:100%;object-fit:contain}
+@keyframes certScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .gallery-section{padding:100px 0;background:#fff}
 .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:50px}
 .gallery-item{border-radius:12px;overflow:hidden;aspect-ratio:4/3;box-shadow:0 2px 8px rgba(0,0,0,.06)}
@@ -327,15 +335,17 @@ img{max-width:100%;height:auto}
 </section>
 
 <!-- ========== 认证 ========== -->
-<section class="gallery-section">
+<section class="cert-section">
 	<div class="container">
 		<div class="section-title reveal">
 			<h2>Certifications</h2>
 			<div class="subtitle">Quality assured by international standards</div>
 		</div>
-		<div class="gallery-grid">
+	</div>
+	<div class="cert-track-wrapper">
+		<div class="cert-track" id="certTrack">
 			{pboot:list scode=5 num=12 order=sorting}
-			<div class="gallery-item reveal">
+			<div class="cert-card">
 				<img src="[list:ico]" alt="[list:title]" loading="lazy">
 			</div>
 			{/pboot:list}
@@ -465,6 +475,10 @@ document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(function
 
 // Hero 幻灯片
 var slides=document.querySelectorAll('.hero-slide');
+
+// 证书无缝滚动：复制一份
+var certTrack=document.getElementById('certTrack');
+if(certTrack){certTrack.innerHTML+=certTrack.innerHTML;}
 if(slides.length>0){
 	slides[0].classList.add('active');
 	if(slides.length>1){
