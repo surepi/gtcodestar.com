@@ -129,145 +129,50 @@ img{max-width:100%;height:auto}
 	<p class="reveal">Stay informed with the latest company news, industry insights and product updates.</p>
 </section>
 
-<!-- 新闻列表（AJAX） -->
+<!-- 新闻列表 -->
 <section class="news-section">
 	<div class="container">
 		<h2 class="section-title reveal">Company News</h2>
-		<div id="ajax_content"></div>
-		<div class="pager" id="ajax_pager"></div>
+		<div class="news-grid">
+			{pboot:list scode=2 num=9 order=date}
+			<div class="n-card reveal">
+				<a href="[list:link]">
+					<div class="n-card-img"><img src="[list:ico]" alt="[list:title]" loading="lazy"></div>
+					<div class="n-card-body">
+						<h3><a href="[list:link]">[list:title]</a></h3>
+						<p>[list:ext_news_description drophtml=1 dropblank=1 lencn=40]</p>
+						<span class="date">[list:date style=Y-m-d]</span>
+						<span class="learn-more">Read More →</span>
+					</div>
+				</a>
+			</div>
+			{/pboot:list}
+		</div>
+		<div class="pager">
+			{pboot:if({page:rows}>0)}
+			<a class="pager-btn" href="{page:pre}">← Prev</a>
+			{page:numbar}
+			<a class="pager-btn" href="{page:next}">Next →</a>
+			{/pboot:if}
+		</div>
 	</div>
 </section>
 
-<script>
-function loadNews(pageIndex) {
-	$.ajax({
-		type: 'POST',
-		url: '{label:app_host}/api.php?p=/GetData/news&num=3&order=id desc&scode=2&page=' + pageIndex,
-		dataType: 'json',
-		data: { page: pageIndex },
-		success: function (response) {
-			if (response.code) {
-				$("#ajax_content").empty();
-				var size = response.data.length;
-				var totalPages = response.totalPages;
-				var currentPage = response.pageIndex;
-				var html = '<div class="news-grid">';
-				for (var i = 0; i < size; i++) {
-					var d = response.data[i];
-					var link = "/list_" + d.scode + "/" + d.id + ".html";
-					html += '<div class="n-card reveal active">' +
-						'<a href="' + link + '" target="_blank">' +
-						'<div class="n-card-img"><img src="' + d.ico + '" alt="' + d.title + '" loading="lazy"></div>' +
-						'<div class="n-card-body">' +
-						'<h3><a href="' + link + '" target="_blank">' + d.title + '</a></h3>' +
-						'<p>' + (d.ext_news_description || '') + '</p>' +
-						'<span class="date">' + d.date + '</span>' +
-						'<span class="learn-more">Read More →</span>' +
-						'</div></a></div>';
-				}
-				html += '</div>';
-				$("#ajax_content").html(html);
-				updatePagination(totalPages, currentPage);
-			}
-		}
-	});
-}
-
-function updatePagination(totalPages, currentPage) {
-	$('#ajax_pager').empty();
-	var html = '';
-	if (currentPage > 1) {
-		html += '<button class="pager-btn" onclick="loadNews(' + (currentPage - 1) + ')">← Prev</button>';
-	} else {
-		html += '<button class="pager-btn disabled">← Prev</button>';
-	}
-	var maxNums = 5, halfNums = Math.floor(maxNums / 2);
-	var startPage = Math.max(1, currentPage - halfNums);
-	var endPage = Math.min(totalPages, startPage + maxNums - 1);
-	if (endPage - startPage < maxNums - 1) startPage = Math.max(1, endPage - maxNums + 1);
-	for (var i = startPage; i <= endPage; i++) {
-		if (i === currentPage) {
-			html += '<button class="pager-btn active">' + i + '</button>';
-		} else {
-			html += '<button class="pager-btn" onclick="loadNews(' + i + ')">' + i + '</button>';
-		}
-	}
-	if (currentPage < totalPages) {
-		html += '<button class="pager-btn" onclick="loadNews(' + (currentPage + 1) + ')">Next →</button>';
-	} else {
-		html += '<button class="pager-btn disabled">Next →</button>';
-	}
-	$('#ajax_pager').html(html);
-}
-
-loadNews(1);
-</script>
-
-<!-- Gallery（AJAX + Fancybox） -->
+<!-- Gallery -->
 <section class="gallery-section">
 	<div class="container">
 		<h2 class="section-title reveal">Gallery</h2>
-		<div id="ajax_content2"></div>
-		<div class="pager" id="ajax_pager2"></div>
+		<div class="gallery-grid">
+			{pboot:list scode=4 num=12 order=date}
+			<div class="gallery-item reveal">
+				<a data-fancybox="gallery" href="[list:ico]">
+					<img src="[list:ico]" alt="[list:title]" loading="lazy">
+				</a>
+			</div>
+			{/pboot:list}
+		</div>
 	</div>
 </section>
-
-<script>
-function loadGallery(pageIndex) {
-	$.ajax({
-		type: 'POST',
-		url: '{label:app_host}/api.php?p=/GetData/news&num=9&order=id desc&scode=4&page=' + pageIndex,
-		dataType: 'json',
-		data: { page: pageIndex },
-		success: function (response) {
-			if (response.code) {
-				$("#ajax_content2").empty();
-				var size = response.data.length;
-				var totalPages = response.totalPages;
-				var currentPage = response.pageIndex;
-				var html = '<div class="gallery-grid">';
-				for (var i = 0; i < size; i++) {
-					var d = response.data[i];
-					html += '<div class="gallery-item"><a data-fancybox="gallery" data-src="' + d.ico + '" href="javascript:;"><img src="' + d.ico + '" alt="" loading="lazy"></a></div>';
-				}
-				html += '</div>';
-				$("#ajax_content2").html(html);
-				updateGalleryPagination(totalPages, currentPage);
-				Fancybox.bind('[data-fancybox="gallery"]', { Thumbs: { type: "classic" } });
-			}
-		}
-	});
-}
-
-function updateGalleryPagination(totalPages, currentPage) {
-	$('#ajax_pager2').empty();
-	var html = '';
-	if (currentPage > 1) {
-		html += '<button class="pager-btn" onclick="loadGallery(' + (currentPage - 1) + ')">← Prev</button>';
-	} else {
-		html += '<button class="pager-btn disabled">← Prev</button>';
-	}
-	var maxNums = 5, halfNums = Math.floor(maxNums / 2);
-	var startPage = Math.max(1, currentPage - halfNums);
-	var endPage = Math.min(totalPages, startPage + maxNums - 1);
-	if (endPage - startPage < maxNums - 1) startPage = Math.max(1, endPage - maxNums + 1);
-	for (var i = startPage; i <= endPage; i++) {
-		if (i === currentPage) {
-			html += '<button class="pager-btn active">' + i + '</button>';
-		} else {
-			html += '<button class="pager-btn" onclick="loadGallery(' + i + ')">' + i + '</button>';
-		}
-	}
-	if (currentPage < totalPages) {
-		html += '<button class="pager-btn" onclick="loadGallery(' + (currentPage + 1) + ')">Next →</button>';
-	} else {
-		html += '<button class="pager-btn disabled">Next →</button>';
-	}
-	$('#ajax_pager2').html(html);
-}
-
-loadGallery(1);
-</script>
 
 <script src="{pboot:sitetplpath}/fancybox/ui-5.0.36/dist/fancybox/fancybox.umd.js"></script>
 <script>

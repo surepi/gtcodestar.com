@@ -221,74 +221,27 @@ img{max-width:100%;height:auto}
 <div id="certifications" class="tab-panel">
 	<section class="cert-section">
 		<div class="container">
-			<div id="ajax_content"></div>
-			<div class="pager" id="ajax_pager"></div>
+			<div class="cert-grid">
+				{pboot:list scode=5 num=12 order=sorting}
+				<div class="cert-card reveal">
+					<img src="[list:ico]" alt="Certification [list:title]" loading="lazy">
+				</div>
+				{/pboot:list}
+			</div>
 		</div>
 	</section>
 </div>
 
 <script>
 // Tab 切换
-$('.tab-btn').on('click', function() {
-	$('.tab-btn').removeClass('active');
-	$(this).addClass('active');
-	$('.tab-panel').removeClass('active');
-	$('#' + $(this).data('tab')).addClass('active');
-});
-
-// 认证 AJAX
-function loadCerts(pageIndex) {
-	$.ajax({
-		type: 'POST',
-		url: '{label:app_host}/api.php?p=/GetData/news&num=6&order=id desc&scode=5&page=' + pageIndex,
-		dataType: 'json',
-		data: { page: pageIndex },
-		success: function (response) {
-			if (response.code) {
-				$("#ajax_content").empty();
-				var size = response.data.length;
-				var totalPages = response.totalPages;
-				var currentPage = response.pageIndex;
-				var html = '<div class="cert-grid">';
-				for (var i = 0; i < size; i++) {
-					html += '<div class="cert-card"><img src="' + response.data[i].ico + '" alt="Certificate" loading="lazy"></div>';
-				}
-				html += '</div>';
-				$("#ajax_content").html(html);
-				updateCertPagination(totalPages, currentPage);
-			}
-		}
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+	btn.addEventListener('click', function(){
+		document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+		btn.classList.add('active');
+		document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+		document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
 	});
-}
-
-function updateCertPagination(totalPages, currentPage) {
-	$('#ajax_pager').empty();
-	var html = '';
-	if (currentPage > 1) {
-		html += '<button class="pager-btn" onclick="loadCerts(' + (currentPage - 1) + ')">← Prev</button>';
-	} else {
-		html += '<button class="pager-btn disabled">← Prev</button>';
-	}
-	var maxNums = 5, halfNums = Math.floor(maxNums / 2);
-	var startPage = Math.max(1, currentPage - halfNums);
-	var endPage = Math.min(totalPages, startPage + maxNums - 1);
-	if (endPage - startPage < maxNums - 1) startPage = Math.max(1, endPage - maxNums + 1);
-	for (var i = startPage; i <= endPage; i++) {
-		if (i === currentPage) {
-			html += '<button class="pager-btn active">' + i + '</button>';
-		} else {
-			html += '<button class="pager-btn" onclick="loadCerts(' + i + ')">' + i + '</button>';
-		}
-	}
-	if (currentPage < totalPages) {
-		html += '<button class="pager-btn" onclick="loadCerts(' + (currentPage + 1) + ')">Next →</button>';
-	} else {
-		html += '<button class="pager-btn disabled">Next →</button>';
-	}
-	$('#ajax_pager').html(html);
-}
-
-loadCerts(1);
+});
 </script>
 
 <!-- Footer -->
