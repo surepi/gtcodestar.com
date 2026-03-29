@@ -129,8 +129,14 @@ function get_user_os($osstr = null)
 // 获取用户IP
 function get_user_ip(): string
 {
-    if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+        $cip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+    } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         $cip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        // X-Forwarded-For 可能有多个IP，取第一个（真实客户端IP）
+        if (strpos($cip, ',') !== false) {
+            $cip = trim(explode(',', $cip)[0]);
+        }
     } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
         $cip = $_SERVER['HTTP_CLIENT_IP'];
     } else {
@@ -139,7 +145,7 @@ function get_user_ip(): string
     if ($cip == '::1') { // 使用localhost时
         $cip = '127.0.0.1';
     }
-    if (! preg_match('/^[0-9\.]+$/', $cip)) { // 非标准的IP
+    if (! preg_match('/^[0-9a-fA-F\.\:]+$/', $cip)) { // 非标准的IP（支持IPv6）
         $cip = '0.0.0.0';
     }
     return htmlspecialchars($cip);
