@@ -7,289 +7,486 @@
 	<meta name="description" content="{pboot:pagedescription}">
 	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,shrink-to-fit=no">
 	<link rel="canonical" href="{label:app_host}/">
-	<!-- Open Graph -->
 	<meta property="og:type" content="website">
 	<meta property="og:title" content="{pboot:pagetitle}">
 	<meta property="og:description" content="{pboot:pagedescription}">
 	<meta property="og:url" content="{label:app_host}/">
 	<meta property="og:site_name" content="{pboot:companyname}">
 	<meta property="og:image" content="{pboot:sitelogo}">
-	<!-- Twitter Card -->
 	<meta name="twitter:card" content="summary_large_image">
 	<meta name="twitter:title" content="{pboot:pagetitle}">
 	<meta name="twitter:description" content="{pboot:pagedescription}">
 	<meta name="robots" content="index, follow">
-	<link rel="stylesheet" href="{pboot:sitetplpath}/bootstrap/css/bootstrap.min.css" >
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" href="{pboot:sitetplpath}/css/aoyun.css?v=v1.3.5" >
-	<link rel="stylesheet" href="{pboot:sitetplpath}/swiper-4.3.5/css/swiper.min.css">
-	<link rel="preload" href="{pboot:sitetplpath}/css/animate.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-	<noscript><link rel="stylesheet" href="{pboot:sitetplpath}/css/animate.css"></noscript>
-	<link rel="stylesheet" href="{pboot:sitetplpath}/css/custom.css">
 	<link rel="shortcut icon" href="{pboot:sitepath}/favicon.ico" type="image/x-icon">
-	<!-- 预连接 R2 CDN -->
 	<link rel="preconnect" href="https://r2.gtcodestar.com.cn" crossorigin>
 	<link rel="dns-prefetch" href="https://r2.gtcodestar.com.cn">
-  <!-- video.js 延迟到需要时加载 -->
-  <link rel="preload" href="{pboot:sitetplpath}/video.js-8.20.0/video-js.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link href="{pboot:sitetplpath}/video.js-8.20.0/video-js.min.css" rel="stylesheet"></noscript>
-</head>
-<body id="home">
-	
-   
-{include file=comm/head.html}
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<style>
+/* ===== Reset & Base ===== */
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#fff;background:#000;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none;transition:all .3s}
+img{max-width:100%;height:auto}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
 
+/* ===== 动画 ===== */
+.reveal{opacity:0;transform:translateY(50px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+.reveal.active{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-80px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+.reveal-left.active{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(80px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+.reveal-right.active{opacity:1;transform:translateX(0)}
+.delay-1{transition-delay:.15s}
+.delay-2{transition-delay:.3s}
+.delay-3{transition-delay:.45s}
+.delay-4{transition-delay:.6s}
 
-<!-- 幻灯片 -->
-<div class="swiper-container">
-  <div class="swiper-wrapper">
-        {pboot:slide num=6 gid=1}
-            <div class="swiper-slide">
-                  {pboot:if([slide:link] != '')}
-                  <a href="[slide:link]">
-                      <div class="swiper-img-wrapper"><img src="[slide:src]" fetchpriority="high" width="1920" height="650"></div>
-                  </a>
-                  {else}
-                  <div class="swiper-img-wrapper"><img src="[slide:src]" fetchpriority="high" width="1920" height="650"></div>
-                  {/pboot:if}                
-                  <div class="container">
-                      <div class="position-absolute text-light" style="top:30%;">
-                          <h1 class="fs-20 fs-sm-32 wow slideInUp">[slide:title]</h1>
-                          <h4 class="fs-14 fs-sm-20 wow slideInUp">[slide:subtitle]</h4>
-                      </div>
-                  </div>
-            </div>
-        {/pboot:slide} 
-  </div>
-  <div class="swiper-button-prev d-none d-md-block"></div><!--左箭头-->
-  <div class="swiper-button-next d-none d-md-block"></div><!--右箭头-->
-  <div class="swiper-pagination"></div>
-</div>
-
-<!--产品推荐-->
-<div class="py-5 product">
-    <div class="container">    
-      {pboot:sort scode=5}
-      	<div class="text-center fs-26 fs-sm-28 text-success wow fadeInDown title"><h2>Products</h2></div>
-      {/pboot:sort}      
-      <div class="row">
-       {pboot:list scode=3 num=6 order=date}
-        <div class="col-12 col-sm-6 col-lg-4">
-              <div class="card">
-                  <div class="card-img"><a href="[list:link]"><img class="card-img-top" src="[list:ico]" alt="[list:title]" width="329" height="329" loading="lazy"></a></div>
-                  <div class="card-body">
-                    <h5 class="card-title"><a href="[list:link]">[list:title lencn=12]</a></h5>                    
-                  </div>
-               </div>
-         </div>
-        {/pboot:list}
-      </div>
-	  {pboot:sort scode=5}
-			<div class="text-center mt-4 wow fadeInDown" data-wow-delay="1s"><h4><a href="{label:app_host}/?product/" class="fs-14 fs-sm-16 more-btn">View more</a></h4></div>
-	  {/pboot:sort}
-    </div>
-</div>
-
-<!-- 关于我们 -->
-<div class="about">
-  <div class="container-fluid">
-      <div class="row d-flex justify-content-center about-box">
-        <div class="col-1"></div>
-          <div class="col-12 col-sm-12 col-lg-5 pic">
-            <img loading="lazy" class="center-block img-fluid" src="{label:r2_domain}/images/home_en/about/1.jpg"/>            
-          </div>          
-          <div class="col-12 col-sm-12 col-lg-6 content">
-              <div class="content-box">
-                {pboot:sort scode=1}
-                <div class="text-left fs-26 fs-sm-28 text-info wow title about-title" data-wow-delay="100ms"><h2>About Us</h2></div>
-              {/pboot:sort}
-              
-              {pboot:content id=1}
-                <div class="row text-secondary mb-5 px-3 lh-2 wow fadeInRightBig content-text" data-wow-delay="100ms">
-                    [content:ext_single_description drophtml=0 dropblank=1 len=1000 more='']
-                </div>
-              <div class="text-right wow fadeInRightBig" data-wow-delay="100ms"><h4><a href="[content:link]" class="fs-14 fs-sm-16 more-btn">+ MORE</a></h4></div>
-              {/pboot:content}
-              </div>
-          </div>
-      </div>
-      <div class="row d-flex justify-content-center">
-          <video id="example_video_1" class="text-center video-js vjs-theme-city" controls preload="none" width="1071" height="600" poster="{label:r2_domain}/images/home_en/about/2.jpg" data-setup="{}">
-            <source src="{label:app_tv_1}" type="video/mp4">
-            <track kind="captions" src="{pboot:sitetplpath}/video.js-8.20.0/example-captions.vtt" srclang="en" label="English">
-            <track kind="subtitles" src="{pboot:sitetplpath}/video.js-8.20.0/example-captions.vtt" srclang="en" label="English">
-            <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
-          </video>
-      </div>
-  </div>
-</div>
-
-<!--Certifications-->
-<div class="certifications">
-  <div class="container-fluid">
-    <div class="row d-flex justify-content-center">
-      <div class="title"><h3>Certifications</h3></div>
-    </div>
-    <div class="row d-flex justify-content-center">
-      <img loading="lazy" class="center-block img-fluid" src="{label:r2_domain}/images/home_en/certifications/0.png"/>
-    </div>
-    <div class="row d-flex justify-content-center" style="width: 1920px; text-align: center; margin: auto;">
-      <div id="marquee-box">
-        <div id="marquee-con">
-          <div id="marquee-1"></div>
-          <div id="marquee" class="d-flex justify-content-between">
-              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/1.jpg" class="marquee-img" width="240" height="350" />
-              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/2.jpg" class="marquee-img" width="240" height="350" />
-              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/3.jpg" class="marquee-img" width="240" height="350" />
-              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/4.jpg" class="marquee-img" width="240" height="350" />
-              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/5.jpg" class="marquee-img" width="240" height="350" />
-              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/6.jpg" class="marquee-img" width="240" height="350" />
-              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/7.jpg" class="marquee-img" width="240" height="350" />
-              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/8.jpg" class="marquee-img" width="240" height="350" />
-              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/9.jpg" class="marquee-img" width="240" height="350" />
-              <img loading="lazy" src="{label:r2_domain}/images/home_en/certifications/10.jpg" class="marquee-img" width="240" height="350" />
-          </div>
-      </div>
-    </div>    
-  </div>
-</div>
-
-<script type="text/javascript">
-  window.onload = function () {
-      var marqueeBox = document.getElementById("marquee-box");
-      var marquee = document.getElementById("marquee");
-      var marqueeCopy = document.getElementById("marquee-1");
-      marqueeCopy.innerHTML = marquee.innerHTML;
-      var marqueeWidth = marquee.offsetWidth;
-      function fun() {
-          if (marqueeBox.scrollLeft >= marqueeWidth) {
-              marqueeBox.scrollLeft = 0;
-          } else {
-              marqueeBox.scrollLeft++;
-          }
-      }
-      var fun1 = setInterval(fun, 20);
-      marqueeBox.onmouseover = function () {
-          clearInterval(fun1);
-      };
-      marqueeBox.onmouseout = function () {
-          fun1 = setInterval(fun, 20);
-      };
-  };
-</script>
-
-
-<!--Exhibition-->
-<div class="certifications exhibition">  
-  <div class="container-fluid">
-      <div class="row d-flex justify-content-center">
-        <div class="title"><h3>Exhibition</h3></div>
-      </div>
-      <div>
-        <div class="row d-flex justify-content-center">
-          <img loading="lazy" src="{label:r2_domain}/images/home_en/exhibition/1.png" class="img-fluid" width="1234" height="502">
-        </div>
-        <div class="row d-flex justify-content-center">
-          <img loading="lazy" src="{label:r2_domain}/images/home_en/exhibition/2.jpg" class="img-fluid" width="1918" height="200">
-        </div>
-        <div class="row d-flex justify-content-center">
-          <div class="video-box">
-            <img loading="lazy" src="{label:r2_domain}/images/home_en/exhibition/3.jpg" class="img-fluid" width="1918" height="617">
-            <div class="video">    
-              <video id="example_video_2" class="text-center video-js vjs-theme-city" controls preload="none" width="780" height="445" poster="{label:r2_domain}/images/home_en/exhibition/5.jpg" data-setup="{}">
-                <source src="{label:app_tv_2}" type="video/mp4">
-                <track kind="captions" src="{pboot:sitetplpath}/video.js-8.20.0/example-captions.vtt" srclang="en" label="English">
-                <track kind="subtitles" src="{pboot:sitetplpath}/video.js-8.20.0/example-captions.vtt" srclang="en" label="English">
-                <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
-                </video>
-            </div>
-          </div>
-        </div>
-        <div class="row d-flex justify-content-center">
-          <img loading="lazy" src="{label:r2_domain}/images/home_en/exhibition/4.png" class="img-fluid" width="1234" height="233">
-        </div>
-      </div>
-  </div>
-</div>
-
-<script src="{pboot:sitetplpath}/js/jquery-1.12.4.min.js"></script>
-<script src="{pboot:sitetplpath}/swiper-4.3.5/js/swiper.min.js"></script>
-<!-- video.js 延迟加载：滚动到视频区域时才加载 -->
-<script>
-var vjsLoaded=false;
-function loadVideoJS(){
-  if(vjsLoaded)return;vjsLoaded=true;
-  var s=document.createElement('script');
-  s.src='{pboot:sitetplpath}/video.js-8.20.0/video.min.js';
-  document.body.appendChild(s);
+/* ===== 导航 ===== */
+.nav{position:fixed;top:0;left:0;width:100%;z-index:1000;padding:0 40px;height:56px;display:flex;align-items:center;transition:all .4s}
+.nav.scrolled{background:rgba(0,0,0,.85);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px)}
+.nav-inner{width:100%;max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-logo img{height:22px;opacity:.9}
+.nav-menu{display:flex;gap:28px;list-style:none}
+.nav-menu a{color:rgba(255,255,255,.85);font-size:13px;font-weight:500;letter-spacing:.3px}
+.nav-menu a:hover{color:#fff}
+.nav-toggle{display:none;background:0;border:0;color:#fff;font-size:22px;cursor:pointer}
+@media(max-width:768px){
+	.nav{padding:0 20px}
+	.nav-menu{display:none;position:absolute;top:56px;left:0;width:100%;background:rgba(0,0,0,.97);flex-direction:column;padding:20px 24px;gap:16px}
+	.nav-menu.open{display:flex}
+	.nav-toggle{display:block}
 }
-// 滚动到 about 区域时加载，或 5 秒后加载
-var vObs=new IntersectionObserver(function(e){
-  if(e[0].isIntersecting){loadVideoJS();vObs.disconnect();}
+
+/* ===== Hero 全屏 ===== */
+.hero{position:relative;height:100vh;min-height:600px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero-slides{position:absolute;inset:0;z-index:0}
+.hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.5s ease}
+.hero-slide.active{opacity:1}
+.hero-slide img{width:100%;height:100%;object-fit:cover}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.3) 0%,rgba(0,0,0,.6) 100%);z-index:1}
+.hero-content{position:relative;z-index:2;text-align:center;max-width:900px;padding:0 24px}
+.hero-eyebrow{font-size:14px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#0af;margin-bottom:20px}
+.hero h1{font-size:clamp(36px,7vw,76px);font-weight:800;line-height:1.05;letter-spacing:-2px;margin-bottom:24px}
+.hero p{font-size:clamp(16px,2vw,21px);color:rgba(255,255,255,.65);line-height:1.6;max-width:600px;margin:0 auto 40px}
+.btn-primary{display:inline-block;padding:14px 36px;background:#0af;color:#000;font-size:15px;font-weight:600;border-radius:100px;transition:all .3s;border:none;cursor:pointer}
+.btn-primary:hover{background:#4dc8ff;transform:translateY(-1px);box-shadow:0 8px 30px rgba(0,170,255,.3);color:#000}
+.btn-ghost{display:inline-block;padding:14px 36px;border:1.5px solid rgba(255,255,255,.4);color:#fff;font-size:15px;font-weight:500;border-radius:100px;margin-left:12px;transition:all .3s}
+.btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.1)}
+.hero-scroll{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:2;animation:bounce 2s infinite}
+.hero-scroll span{display:block;width:24px;height:38px;border:2px solid rgba(255,255,255,.4);border-radius:12px;position:relative}
+.hero-scroll span::after{content:'';width:4px;height:8px;background:rgba(255,255,255,.6);border-radius:2px;position:absolute;top:6px;left:50%;transform:translateX(-50%);animation:scrollDot 2s infinite}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+@keyframes scrollDot{0%{opacity:1;top:6px}100%{opacity:0;top:20px}}
+
+/* ===== 产品横向滚动 ===== */
+.products-scroll{padding:100px 0;background:#000}
+.section-title{text-align:center;margin-bottom:60px}
+.section-title h2{font-size:clamp(28px,4vw,48px);font-weight:700;letter-spacing:-1px}
+.section-title .subtitle{font-size:17px;color:rgba(255,255,255,.45);margin-top:12px}
+.scroll-container{display:flex;gap:20px;overflow-x:auto;padding:0 24px 20px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.scroll-container::-webkit-scrollbar{display:none}
+.product-card{flex:0 0 300px;scroll-snap-align:start;background:#111;border-radius:20px;overflow:hidden;transition:transform .4s,box-shadow .4s;border:1px solid rgba(255,255,255,.06);cursor:pointer}
+.product-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 20px 60px rgba(0,170,255,.12);border-color:rgba(0,170,255,.2)}
+.product-card .p-img{height:260px;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(180deg,#1a1a2e 0%,#111 100%)}
+.product-card .p-img img{max-height:100%;max-width:100%;object-fit:contain;transition:transform .5s}
+.product-card:hover .p-img img{transform:scale(1.1)}
+.product-card .p-info{padding:20px;text-align:center}
+.product-card .p-info h3{font-size:15px;font-weight:600;margin-bottom:6px}
+.product-card .p-info span{font-size:12px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px}
+.view-all{text-align:center;margin-top:50px}
+.btn-outline{display:inline-block;padding:12px 32px;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);font-size:14px;font-weight:500;border-radius:100px;letter-spacing:.5px;transition:all .3s}
+.btn-outline:hover{border-color:#0af;color:#0af;background:rgba(0,170,255,.08)}
+
+/* ===== 产品分类网格 ===== */
+.categories{padding:100px 0;background:#0a0a0a}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.cat-card{position:relative;background:#111;border-radius:16px;overflow:hidden;padding:40px 30px;min-height:200px;border:1px solid rgba(255,255,255,.06);transition:all .4s;display:flex;flex-direction:column;justify-content:flex-end}
+.cat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,170,255,.05),transparent);opacity:0;transition:opacity .4s}
+.cat-card:hover::before{opacity:1}
+.cat-card:hover{border-color:rgba(0,170,255,.2);transform:translateY(-4px)}
+.cat-card h3{font-size:20px;font-weight:700;margin-bottom:8px;position:relative;z-index:1}
+.cat-card p{font-size:14px;color:rgba(255,255,255,.4);position:relative;z-index:1}
+.cat-card .cat-count{position:absolute;top:24px;right:24px;font-size:36px;font-weight:800;color:rgba(255,255,255,.06)}
+@media(max-width:768px){
+	.cat-grid{grid-template-columns:1fr}
+}
+
+/* ===== 关于我们（左右对称）===== */
+.about-section{padding:120px 0;background:#000}
+.about-row{display:flex;align-items:center;gap:80px}
+.about-text{flex:1}
+.about-text .eyebrow{font-size:13px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#0af;margin-bottom:16px}
+.about-text h2{font-size:clamp(28px,4vw,42px);font-weight:700;letter-spacing:-1px;line-height:1.2;margin-bottom:24px}
+.about-text p{font-size:16px;color:rgba(255,255,255,.55);line-height:1.8;margin-bottom:16px}
+.about-media{flex:1;position:relative}
+.about-media img{width:100%;border-radius:20px}
+.about-media video{width:100%;border-radius:20px}
+@media(max-width:768px){
+	.about-row{flex-direction:column;gap:40px}
+}
+
+/* ===== 数据统计条 ===== */
+.stats-bar{padding:80px 0;background:#0a0a0a}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center}
+.stat-item .number{font-size:clamp(36px,5vw,52px);font-weight:800;background:linear-gradient(135deg,#0af,#06f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-item .label{font-size:13px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:2px;margin-top:8px}
+@media(max-width:768px){
+	.stats-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ===== 新闻动态 ===== */
+.news-section{padding:100px 0;background:#000}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:50px}
+.news-card{background:#111;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.06);transition:all .4s}
+.news-card:hover{border-color:rgba(0,170,255,.2);transform:translateY(-4px)}
+.news-card .n-img{height:200px;overflow:hidden}
+.news-card .n-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.news-card:hover .n-img img{transform:scale(1.06)}
+.news-card .n-body{padding:24px}
+.news-card .n-body h3{font-size:16px;font-weight:600;line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.news-card .n-body h3 a{color:#fff}
+.news-card .n-body h3 a:hover{color:#0af}
+.news-card .n-date{font-size:12px;color:rgba(255,255,255,.35)}
+@media(max-width:768px){
+	.news-grid{grid-template-columns:1fr}
+}
+
+/* ===== Gallery/展会 ===== */
+.gallery-section{padding:100px 0;background:#0a0a0a}
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:50px}
+.gallery-item{border-radius:12px;overflow:hidden;aspect-ratio:4/3}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.gallery-item:hover img{transform:scale(1.08)}
+@media(max-width:768px){
+	.gallery-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ===== CTA ===== */
+.cta{padding:120px 0;text-align:center;position:relative;overflow:hidden}
+.cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,100,200,.15) 0%,transparent 70%)}
+.cta-inner{position:relative;z-index:1}
+.cta h2{font-size:clamp(28px,5vw,48px);font-weight:700;letter-spacing:-1px;margin-bottom:16px}
+.cta p{font-size:18px;color:rgba(255,255,255,.5);margin-bottom:40px}
+
+/* ===== Footer ===== */
+.footer{padding:60px 0 30px;background:#000;border-top:1px solid rgba(255,255,255,.08)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+.footer h4{font-size:14px;font-weight:600;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px}
+.footer ul{list-style:none}
+.footer li{margin-bottom:10px}
+.footer li a,.footer li span{color:rgba(255,255,255,.4);font-size:13px}
+.footer li a:hover{color:#0af}
+.footer-bottom{margin-top:40px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);text-align:center;color:rgba(255,255,255,.25);font-size:12px}
+.footer-social{display:flex;gap:10px;margin-top:12px}
+.footer-social a{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.15);border-radius:50%;color:rgba(255,255,255,.5);font-size:14px;transition:all .3s}
+.footer-social a:hover{border-color:#0af;color:#0af}
+@media(max-width:768px){
+	.footer-grid{grid-template-columns:1fr 1fr;gap:30px}
+}
+
+/* ===== 返回顶部 ===== */
+.back-top{position:fixed;bottom:30px;right:30px;width:42px;height:42px;border-radius:50%;background:rgba(0,170,255,.85);color:#fff;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:999;font-size:16px;transition:all .3s;border:none}
+.back-top:hover{background:#0af;transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,170,255,.4)}
+	</style>
+</head>
+<body>
+
+<!-- ========== 导航 ========== -->
+<nav class="nav" id="mainNav">
+	<div class="nav-inner">
+		<a class="nav-logo" href="{pboot:sitepath}/">
+			<img src="{pboot:sitelogo}" alt="{pboot:companyname}">
+		</a>
+		<button class="nav-toggle" onclick="document.querySelector('.nav-menu').classList.toggle('open')" aria-label="Menu">☰</button>
+		<ul class="nav-menu">
+			<li><a href="{pboot:sitepath}/">Home</a></li>
+			{pboot:nav num=10 parent=0}
+			<li><a href="[nav:link]">[nav:name]</a></li>
+			{/pboot:nav}
+		</ul>
+	</div>
+</nav>
+
+<!-- ========== Hero ========== -->
+<section class="hero">
+	<div class="hero-slides" id="heroSlides">
+		{pboot:slide num=6 gid=1}
+		<div class="hero-slide">
+			<img src="[slide:src]" alt="[slide:title]" fetchpriority="high">
+		</div>
+		{/pboot:slide}
+	</div>
+	<div class="hero-overlay"></div>
+	<div class="hero-content">
+		<div class="hero-eyebrow reveal">Since 2009</div>
+		<h1 class="reveal delay-1">Professional Barcode<br>Scanner Manufacturer</h1>
+		<p class="reveal delay-2">Trusted by businesses in 100+ countries. From retail to industrial, we deliver precision scanning solutions.</p>
+		<div class="reveal delay-3">
+			<a href="{label:app_host}/?product/" class="btn-primary">Explore Products</a>
+			<a href="{label:app_host}/?contact/" class="btn-ghost">Contact Sales</a>
+		</div>
+	</div>
+	<div class="hero-scroll"><span></span></div>
+</section>
+
+<!-- ========== 数据统计 ========== -->
+<section class="stats-bar">
+	<div class="container">
+		<div class="stats-grid">
+			<div class="stat-item reveal">
+				<div class="number">2009</div>
+				<div class="label">Established</div>
+			</div>
+			<div class="stat-item reveal delay-1">
+				<div class="number">100+</div>
+				<div class="label">Countries</div>
+			</div>
+			<div class="stat-item reveal delay-2">
+				<div class="number">15M+</div>
+				<div class="label">Users Worldwide</div>
+			</div>
+			<div class="stat-item reveal delay-3">
+				<div class="number">60+</div>
+				<div class="label">Patents</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ========== 产品横向滚动 ========== -->
+<section class="products-scroll">
+	<div class="section-title reveal">
+		<h2>Featured Products</h2>
+		<div class="subtitle">High-performance scanning for every scenario</div>
+	</div>
+	<div class="scroll-container">
+		{pboot:list scode=3 num=12 order=date}
+		<div class="product-card">
+			<a href="[list:link]">
+				<div class="p-img">
+					<img src="[list:ico]" alt="[list:title]" loading="lazy">
+				</div>
+				<div class="p-info">
+					<h3>[list:title]</h3>
+					<span>[list:sortname]</span>
+				</div>
+			</a>
+		</div>
+		{/pboot:list}
+	</div>
+	<div class="view-all reveal">
+		<a href="{label:app_host}/?product/" class="btn-outline">View All Products →</a>
+	</div>
+</section>
+
+<!-- ========== 产品分类 ========== -->
+<section class="categories">
+	<div class="container">
+		<div class="section-title reveal">
+			<h2>Product Categories</h2>
+			<div class="subtitle">Solutions for every industry</div>
+		</div>
+		<div class="cat-grid">
+			{pboot:sort scode=3}
+			{pboot:nav num=6 parent=3}
+			<a href="[nav:link]">
+				<div class="cat-card reveal">
+					<div class="cat-count">[nav:scode]</div>
+					<h3>[nav:name]</h3>
+					<p>View Products →</p>
+				</div>
+			</a>
+			{/pboot:nav}
+			{/pboot:sort}
+		</div>
+	</div>
+</section>
+
+<!-- ========== 关于我们 ========== -->
+<section class="about-section">
+	<div class="container">
+		<div class="about-row">
+			<div class="about-text reveal-left">
+				<div class="eyebrow">About Us</div>
+				<h2>Leading Barcode Scanner Manufacturer Since 2009</h2>
+				{pboot:content id=1}
+				<p>[content:ext_single_description drophtml=1 dropblank=1 len=400 more='']</p>
+				<a href="[content:link]" class="btn-outline" style="margin-top:12px">Learn More →</a>
+				{/pboot:content}
+			</div>
+			<div class="about-media reveal-right">
+				<img src="{label:r2_domain}/images/home_en/about/1.jpg" alt="About Gtcodestar" loading="lazy">
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ========== 认证 ========== -->
+<section class="gallery-section">
+	<div class="container">
+		<div class="section-title reveal">
+			<h2>Certifications</h2>
+			<div class="subtitle">Quality assured by international standards</div>
+		</div>
+		<div class="gallery-grid">
+			{pboot:list scode=5 num=12 order=sorting}
+			<div class="gallery-item reveal">
+				<img src="[list:ico]" alt="[list:title]" loading="lazy">
+			</div>
+			{/pboot:list}
+		</div>
+	</div>
+</section>
+
+<!-- ========== 新闻 ========== -->
+<section class="news-section">
+	<div class="container">
+		<div class="section-title reveal">
+			<h2>Latest News</h2>
+			<div class="subtitle">Stay updated with our latest innovations</div>
+		</div>
+		<div class="news-grid">
+			{pboot:list scode=2 num=3 order=date}
+			<div class="news-card reveal">
+				<a href="[list:link]">
+					<div class="n-img">
+						<img src="[list:ico]" alt="[list:title]" loading="lazy">
+					</div>
+					<div class="n-body">
+						<div class="n-date">[list:date style=Y-m-d]</div>
+						<h3><a href="[list:link]">[list:title]</a></h3>
+					</div>
+				</a>
+			</div>
+			{/pboot:list}
+		</div>
+		<div class="view-all reveal" style="margin-top:40px">
+			<a href="{label:app_host}/?news/" class="btn-outline">More News →</a>
+		</div>
+	</div>
+</section>
+
+<!-- ========== 展会 Gallery ========== -->
+<section class="gallery-section" style="background:#000">
+	<div class="container">
+		<div class="section-title reveal">
+			<h2>Global Exhibitions</h2>
+			<div class="subtitle">Meeting partners around the world</div>
+		</div>
+		<div class="gallery-grid">
+			{pboot:list scode=4 num=8 order=date}
+			<div class="gallery-item reveal">
+				<img src="[list:ico]" alt="Exhibition" loading="lazy">
+			</div>
+			{/pboot:list}
+		</div>
+	</div>
+</section>
+
+<!-- ========== CTA ========== -->
+<section class="cta">
+	<div class="cta-inner reveal">
+		<h2>Ready to Partner With Us?</h2>
+		<p>OEM & ODM solutions tailored to your business needs</p>
+		<a href="{label:app_host}/?contact/" class="btn-primary">Get in Touch</a>
+	</div>
+</section>
+
+<!-- ========== Footer ========== -->
+<footer class="footer">
+	<div class="container">
+		<div class="footer-grid">
+			<div>
+				<h4>{pboot:companyname}</h4>
+				<ul>
+					<li><span><i class="fa fa-map-marker"></i> {pboot:companyaddress}</span></li>
+					<li><span><i class="fa fa-phone"></i> {pboot:companyphone}</span></li>
+					<li><span><i class="fa fa-envelope-o"></i> {pboot:companyemail}</span></li>
+					<li><span><i class="fa fa-mobile"></i> {pboot:companymobile}</span></li>
+				</ul>
+				<div class="footer-social">
+					<a href="#" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+					<a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+				</div>
+			</div>
+			<div>
+				<h4>Company</h4>
+				<ul>
+					<li><a href="{label:app_host}/?aboutus/">About Us</a></li>
+					<li><a href="{label:app_host}/?news/">News</a></li>
+					<li><a href="{label:app_host}/?contact/">Contact Us</a></li>
+				</ul>
+			</div>
+			<div>
+				<h4>Products</h4>
+				<ul>
+					{pboot:nav num=6 parent=3}
+					<li><a href="[nav:link]">[nav:name]</a></li>
+					{/pboot:nav}
+				</ul>
+			</div>
+			<div>
+				<h4>Support</h4>
+				<ul>
+					<li><a href="{label:app_host}/?contact/">Sales Inquiry</a></li>
+					<li><a href="{label:app_host}/?contact/">Technical Support</a></li>
+					<li><a href="{label:app_host}/?contact/">OEM/ODM Service</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="footer-bottom">{pboot:sitecopyright}</div>
+	</div>
+</footer>
+
+<!-- 返回顶部 -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+<script>
+// 导航滚动
+var nav=document.getElementById('mainNav');
+var backTop=document.getElementById('backTop');
+window.addEventListener('scroll',function(){
+	nav.classList.toggle('scrolled',window.scrollY>80);
+	backTop.style.display=window.scrollY>600?'flex':'none';
 });
-var aboutEl=document.querySelector('.about');
-if(aboutEl)vObs.observe(aboutEl);
-setTimeout(loadVideoJS,5000);
+
+// 滚动动画
+var ro=new IntersectionObserver(function(entries){
+	entries.forEach(function(e){
+		if(e.isIntersecting)e.target.classList.add('active');
+	});
+},{threshold:0.12,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(function(el){ro.observe(el)});
+
+// Hero 幻灯片
+var slides=document.querySelectorAll('.hero-slide');
+if(slides.length>0){
+	slides[0].classList.add('active');
+	if(slides.length>1){
+		var idx=0;
+		setInterval(function(){
+			slides[idx].classList.remove('active');
+			idx=(idx+1)%slides.length;
+			slides[idx].classList.add('active');
+		},5000);
+	}
+}
 </script>
-<script>        
-  var mySwiper = new Swiper ('.swiper-container', {
-    direction: 'horizontal',
-    loop: true,
-    speed: 1920,
-    autoplay : {
-        delay:3500,
-        disableOnInteraction: false
-     },
-    pagination: {
-      el: '.swiper-pagination',
-      clickable :true,
-    },    
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },   
-  })        
-</script>
-  
-{include file=comm/foot.html}
 
 <!-- 结构化数据 -->
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "{pboot:companyname}",
-  "url": "{label:app_host}",
-  "logo": "{pboot:sitelogo}",
-  "description": "{pboot:pagedescription}",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Foshan",
-    "addressCountry": "CN"
-  },
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "telephone": "{pboot:companyphone}",
-    "email": "{pboot:companyemail}",
-    "contactType": "sales"
-  },
-  "sameAs": []
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "{pboot:companyname}",
-  "url": "{label:app_host}",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "{label:app_host}/?search/&keyword={search_term_string}",
-    "query-input": "required name=search_term_string"
-  }
+  "@context":"https://schema.org",
+  "@type":"Organization",
+  "name":"{pboot:companyname}",
+  "url":"{label:app_host}",
+  "logo":"{pboot:sitelogo}",
+  "description":"{pboot:pagedescription}",
+  "address":{"@type":"PostalAddress","addressLocality":"Foshan","addressCountry":"CN"},
+  "contactPoint":{"@type":"ContactPoint","telephone":"{pboot:companyphone}","email":"{pboot:companyemail}","contactType":"sales"}
 }
 </script>
 
 </body>
 </html>
-
