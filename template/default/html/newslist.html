@@ -16,233 +16,316 @@
 	<meta name="twitter:description" content="{pboot:pagedescription}">
 	<meta name="robots" content="index, follow">
 	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,shrink-to-fit=no">
-	<link rel="stylesheet" href="{pboot:sitetplpath}/bootstrap/css/bootstrap.min.css" >
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" href="{pboot:sitetplpath}/css/aoyun.css?v=v1.3.5" >
-	<link rel="stylesheet" href="{pboot:sitetplpath}/swiper-4.3.5/css/swiper.min.css">
-	<link rel="stylesheet" href="{pboot:sitetplpath}/css/animate.css">
-	<link rel="stylesheet" href="{pboot:sitetplpath}/css/custom.css">
 	<link rel="shortcut icon" href="{pboot:sitepath}/favicon.ico" type="image/x-icon">
-	<script src="{pboot:sitetplpath}/js/jquery-1.12.4.min.js" ></script>
-	<script src="{pboot:sitetplpath}/js/common.js" ></script>
+	<link rel="preconnect" href="https://r2.gtcodestar.com.cn" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="{pboot:sitetplpath}/fancybox/ui-5.0.36/dist/fancybox/fancybox.css">
+	<script src="{pboot:sitetplpath}/js/jquery-1.12.4.min.js"></script>
+	<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1d1d1f;background:#fff;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none;transition:all .3s}
+img{max-width:100%;height:auto}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;width:100%;z-index:1000;padding:0 40px;height:56px;display:flex;align-items:center;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);box-shadow:0 1px 0 rgba(0,0,0,.06)}
+.nav-inner{width:100%;max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-logo img{height:22px}
+.nav-menu{display:flex;gap:28px;list-style:none}
+.nav-menu a{color:rgba(0,0,0,.7);font-size:13px;font-weight:500;letter-spacing:.3px}
+.nav-menu a:hover{color:#1d1d1f}
+.nav-toggle{display:none;background:0;border:0;color:#1d1d1f;font-size:22px;cursor:pointer}
+
+/* Hero */
+.page-hero{padding:140px 0 60px;background:#f5f5f7;text-align:center}
+.page-hero h1{font-size:clamp(32px,5vw,56px);font-weight:800;letter-spacing:-1.5px;margin-bottom:12px}
+.page-hero p{font-size:18px;color:#6e6e73;max-width:600px;margin:0 auto}
+
+/* 新闻区块 */
+.news-section{padding:60px 0 40px}
+.section-title{font-size:28px;font-weight:800;letter-spacing:-0.5px;margin-bottom:32px;text-align:center}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.n-card{background:#f5f5f7;border-radius:20px;overflow:hidden;transition:transform .4s,box-shadow .4s;cursor:pointer}
+.n-card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(0,0,0,.1)}
+.n-card-img{height:200px;overflow:hidden}
+.n-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.n-card:hover .n-card-img img{transform:scale(1.06)}
+.n-card-body{padding:24px 28px}
+.n-card-body h3{font-size:17px;font-weight:700;margin-bottom:8px;line-height:1.4}
+.n-card-body h3 a{color:#1d1d1f}
+.n-card-body h3 a:hover{color:#0071e3}
+.n-card-body p{font-size:14px;color:#6e6e73;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px}
+.n-card-body .date{font-size:12px;color:#86868b}
+.n-card-body .learn-more{display:inline-block;margin-top:8px;font-size:13px;font-weight:600;color:#0071e3}
+.n-card-body .learn-more:hover{text-decoration:underline}
+
+/* 胶囊分页 */
+.pager{padding:40px 0;display:flex;justify-content:center;gap:6px}
+.pager-btn{display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;padding:0 16px;border-radius:100px;font-size:14px;font-weight:500;color:#6e6e73;background:#f5f5f7;border:none;cursor:pointer;transition:all .3s}
+.pager-btn:hover{background:#e8e8ed;color:#1d1d1f}
+.pager-btn.active{background:#1d1d1f;color:#fff}
+.pager-btn.disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+
+/* Gallery */
+.gallery-section{padding:40px 0 80px;background:#f5f5f7}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.gallery-item{border-radius:16px;overflow:hidden;aspect-ratio:16/10;cursor:pointer;position:relative}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.gallery-item:hover img{transform:scale(1.05)}
+
+/* 动画 */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal.active{opacity:1;transform:translateY(0)}
+
+/* Footer */
+.footer{padding:60px 0 30px;background:#1d1d1f;color:#fff}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+.footer h4{font-size:14px;font-weight:600;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px}
+.footer ul{list-style:none}
+.footer li{margin-bottom:10px}
+.footer li a,.footer li span{color:rgba(255,255,255,.4);font-size:13px}
+.footer li a:hover{color:#0071e3}
+.footer-bottom{margin-top:40px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);text-align:center;color:rgba(255,255,255,.25);font-size:12px}
+.footer-social{display:flex;gap:10px;margin-top:12px}
+.footer-social a{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.15);border-radius:50%;color:rgba(255,255,255,.5);font-size:14px;transition:all .3s}
+.footer-social a:hover{border-color:#0071e3;color:#0071e3}
+
+@media(max-width:768px){
+	.nav{padding:0 20px}
+	.nav-menu{display:none;position:absolute;top:56px;left:0;width:100%;background:rgba(255,255,255,.97);flex-direction:column;padding:20px 24px;gap:16px}
+	.nav-menu.open{display:flex}
+	.nav-toggle{display:block}
+	.news-grid,.gallery-grid{grid-template-columns:1fr}
+	.footer-grid{grid-template-columns:1fr 1fr;gap:30px}
+}
+@media(min-width:769px) and (max-width:1024px){
+	.news-grid,.gallery-grid{grid-template-columns:repeat(2,1fr)}
+}
+	</style>
 </head>
-<body id="newslist">
-	
-{include file=comm/head.html}
+<body>
 
-
-{include file=comm/top.html}
-
-<!--新闻资讯-->
-<div class="news">
-	<div class="container">
-		<div class="row mb-3">
-			<div class="title"><div class="line"></div><h2>Company News</h2></div>
-			<div class="divider"></div>
-		</div>
-		<div class="row">
-			<div class="content" id="ajax_content"></div>
-		</div>
-		<div class="row justify-content-center">
-			<div class="pager" id="ajax_pager"></div>
-		</div>
+<!-- 导航 -->
+<nav class="nav">
+	<div class="nav-inner">
+		<a class="nav-logo" href="{pboot:sitepath}/">
+			<img src="{pboot:sitelogo}" alt="{pboot:companyname}">
+		</a>
+		<button class="nav-toggle" onclick="document.querySelector('.nav-menu').classList.toggle('open')" aria-label="Menu">☰</button>
+		<ul class="nav-menu">
+			<li><a href="{pboot:sitepath}/">Home</a></li>
+			{pboot:nav num=10 parent=0}
+			<li><a href="[nav:link]">[nav:name]</a></li>
+			{/pboot:nav}
+		</ul>
 	</div>
-</div>
+</nav>
+
+<!-- Hero -->
+<section class="page-hero">
+	<h1 class="reveal">News & Updates</h1>
+	<p class="reveal">Stay informed with the latest company news, industry insights and product updates.</p>
+</section>
+
+<!-- 新闻列表（AJAX） -->
+<section class="news-section">
+	<div class="container">
+		<h2 class="section-title reveal">Company News</h2>
+		<div id="ajax_content"></div>
+		<div class="pager" id="ajax_pager"></div>
+	</div>
+</section>
+
 <script>
 function loadNews(pageIndex) {
 	$.ajax({
 		type: 'POST',
 		url: '{label:app_host}/api.php?p=/GetData/news&num=3&order=id desc&scode=2&page=' + pageIndex,
 		dataType: 'json',
-		data: {
-			page: pageIndex
-		},
-		success: function (response, status) {
+		data: { page: pageIndex },
+		success: function (response) {
 			if (response.code) {
 				$("#ajax_content").empty();
-				var size = response.data.length
-				totalPages = response.totalPages
-				currentPage = response.pageIndex
-				var conhtml = '<ul class="list-unstyled news-list">';
+				var size = response.data.length;
+				var totalPages = response.totalPages;
+				var currentPage = response.pageIndex;
+				var html = '<div class="news-grid">';
 				for (var i = 0; i < size; i++) {
-					var link = "/?list_" + response.data[i].scode + "/" + response.data[i].id + ".html";
-					var str = '<li class="media border-bottom p-3">' +
-						'<a class="mr-3" href="' + link + '" target="_blank" ><img src="' + response.data[i].ico + '" width="130" height="90"></a>' +
-						'<div class="media-body">' +
-						'    <a href="' + link + '" target="_blank"><h5 class="mt-0 mb-1">' + response.data[i].title + '</h5></a>' +
-						'    <p>' + response.data[i].ext_news_description + '</p>' +
-						'    <span class="date">' + response.data[i].date + '</span>' +
-						'</div>' +
-						'</li>';
-					conhtml += str
+					var d = response.data[i];
+					var link = "/list_" + d.scode + "/" + d.id + ".html";
+					html += '<div class="n-card reveal active">' +
+						'<a href="' + link + '" target="_blank">' +
+						'<div class="n-card-img"><img src="' + d.ico + '" alt="' + d.title + '" loading="lazy"></div>' +
+						'<div class="n-card-body">' +
+						'<h3><a href="' + link + '" target="_blank">' + d.title + '</a></h3>' +
+						'<p>' + (d.ext_news_description || '') + '</p>' +
+						'<span class="date">' + d.date + '</span>' +
+						'<span class="learn-more">Read More →</span>' +
+						'</div></a></div>';
 				}
-				conhtml += '</ul>';
-				$("#ajax_content").html(conhtml)
-				updatePagination(totalPages, pageIndex);
-			} else {
+				html += '</div>';
+				$("#ajax_content").html(html);
+				updatePagination(totalPages, currentPage);
 			}
-		},
-		error: function (xhr, status, error) {
 		}
 	});
 }
 
-// 更新分页组件
 function updatePagination(totalPages, currentPage) {
 	$('#ajax_pager').empty();
-	var pageHtml = '<nav aria-label="Page navigation"><ul class="pagination justify-content-center">';
+	var html = '';
 	if (currentPage > 1) {
-		pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews(' + (currentPage - 1) + ')">Prev</a></li>';
+		html += '<button class="pager-btn" onclick="loadNews(' + (currentPage - 1) + ')">← Prev</button>';
 	} else {
-		pageHtml += '<li class="page-item disabled"><a class="page-link" href="javascript:;" onclick="loadNews(' + (currentPage - 1) + ')">Prev</a></li>';
+		html += '<button class="pager-btn disabled">← Prev</button>';
 	}
-	let startPage, endPage;
-	let maxNums = 3;
-	let halfNums = Math.floor(maxNums / 2);
-	if (currentPage === 1) {
-		startPage = 1;
-		endPage = Math.min(maxNums, totalPages);
-	} else if (currentPage === totalPages) {
-		startPage = Math.max(totalPages - (maxNums -1), 1);
-		endPage = totalPages;
-	} else {
-		startPage = currentPage - halfNums;
-		endPage = currentPage + halfNums;
-		if (startPage < 1) {
-			startPage = 1;
-			endPage = Math.min(maxNums, totalPages);
-		}
-		if (endPage > totalPages) {
-			endPage = totalPages;
-			startPage = Math.max(totalPages -  (maxNums - 1), 1);
-		}
-	}
-	for (let i = startPage; i <= endPage; i++) {
+	var maxNums = 5, halfNums = Math.floor(maxNums / 2);
+	var startPage = Math.max(1, currentPage - halfNums);
+	var endPage = Math.min(totalPages, startPage + maxNums - 1);
+	if (endPage - startPage < maxNums - 1) startPage = Math.max(1, endPage - maxNums + 1);
+	for (var i = startPage; i <= endPage; i++) {
 		if (i === currentPage) {
-			pageHtml += '<li class="page-item active"><span class="page-link">' + i + '</span></li>';
+			html += '<button class="pager-btn active">' + i + '</button>';
 		} else {
-			pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews(' + i + ')">' + i + '</a></li>';
+			html += '<button class="pager-btn" onclick="loadNews(' + i + ')">' + i + '</button>';
 		}
 	}
 	if (currentPage < totalPages) {
-		pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews(' + (currentPage + 1) + ')">Next</a></li>';
+		html += '<button class="pager-btn" onclick="loadNews(' + (currentPage + 1) + ')">Next →</button>';
 	} else {
-		pageHtml += '<li class="page-item disabled"><a class="page-link" href="javascript:;" onclick="loadNews(' + (currentPage + 1) + ')">Next</a></li>';
+		html += '<button class="pager-btn disabled">Next →</button>';
 	}
-	pageHtml += '</ul></nav>';
-	$('#ajax_pager').html(pageHtml);
+	$('#ajax_pager').html(html);
 }
 
-let currentPage = 1;
-loadNews(currentPage);
+loadNews(1);
 </script>
 
-<!--新闻资讯-->
-<div class="gallery">
+<!-- Gallery（AJAX + Fancybox） -->
+<section class="gallery-section">
 	<div class="container">
-		<div class="row">
-			<div class="content" id="ajax_content2"></div>
-		</div>
-		<div class="row justify-content-center">
-			<div class="pager" id="ajax_pager2"></div>
-		</div>
+		<h2 class="section-title reveal">Gallery</h2>
+		<div id="ajax_content2"></div>
+		<div class="pager" id="ajax_pager2"></div>
 	</div>
-</div>
+</section>
+
 <script>
-function loadNews2(pageIndex) {
+function loadGallery(pageIndex) {
 	$.ajax({
 		type: 'POST',
 		url: '{label:app_host}/api.php?p=/GetData/news&num=9&order=id desc&scode=4&page=' + pageIndex,
 		dataType: 'json',
-		data: {
-			page: pageIndex
-		},
-		success: function (response, status) {
+		data: { page: pageIndex },
+		success: function (response) {
 			if (response.code) {
 				$("#ajax_content2").empty();
-				var size = response.data.length
-				totalPages = response.totalPages
-				currentPage = response.pageIndex
-				var conhtml = '<div class="row">';
+				var size = response.data.length;
+				var totalPages = response.totalPages;
+				var currentPage = response.pageIndex;
+				var html = '<div class="gallery-grid">';
 				for (var i = 0; i < size; i++) {
-					var link = "/?list_" + response.data[i].scode + "/" + response.data[i].id + ".html";
-					var str = '<div class="col-12 col-md-4 mb-4"><a data-fancybox="gallery" data-src="' + response.data[i].ico + '" href=""><img src="' + response.data[i].ico + '" width="376" height="240"/></a></div>';
-					conhtml += str
+					var d = response.data[i];
+					html += '<div class="gallery-item"><a data-fancybox="gallery" data-src="' + d.ico + '" href="javascript:;"><img src="' + d.ico + '" alt="" loading="lazy"></a></div>';
 				}
-				conhtml += '</div>';
-				$("#ajax_content2").html(conhtml)
-				updatePagination2(totalPages, pageIndex);
-			} else {
-
+				html += '</div>';
+				$("#ajax_content2").html(html);
+				updateGalleryPagination(totalPages, currentPage);
+				Fancybox.bind('[data-fancybox="gallery"]', { Thumbs: { type: "classic" } });
 			}
-		},
-		error: function (xhr, status, error) {
 		}
 	});
 }
 
-function updatePagination2(totalPages, currentPage) {
+function updateGalleryPagination(totalPages, currentPage) {
 	$('#ajax_pager2').empty();
-	var pageHtml = '<nav aria-label="Page navigation"><ul class="pagination justify-content-center">';
+	var html = '';
 	if (currentPage > 1) {
-		pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews2(' + (currentPage - 1) + ')">Prev</a></li>';
+		html += '<button class="pager-btn" onclick="loadGallery(' + (currentPage - 1) + ')">← Prev</button>';
 	} else {
-		pageHtml += '<li class="page-item disabled"><a class="page-link" href="javascript:;" onclick="loadNews2(' + (currentPage - 1) + ')">Prev</a></li>';
+		html += '<button class="pager-btn disabled">← Prev</button>';
 	}
-	let startPage, endPage;
-	let maxNums = 3;
-	let halfNums = Math.floor(maxNums / 2);
-	if (currentPage === 1) {
-		startPage = 1;
-		endPage = Math.min(maxNums, totalPages);
-	} else if (currentPage === totalPages) {
-		startPage = Math.max(totalPages - (maxNums -1), 1);
-		endPage = totalPages;
-	} else {
-		startPage = currentPage - halfNums;
-		endPage = currentPage + halfNums;
-		if (startPage < 1) {
-			startPage = 1;
-			endPage = Math.min(maxNums, totalPages);
-		}
-		if (endPage > totalPages) {
-			endPage = totalPages;
-			startPage = Math.max(totalPages -  (maxNums - 1), 1);
-		}
-	}
-	for (let i = startPage; i <= endPage; i++) {
+	var maxNums = 5, halfNums = Math.floor(maxNums / 2);
+	var startPage = Math.max(1, currentPage - halfNums);
+	var endPage = Math.min(totalPages, startPage + maxNums - 1);
+	if (endPage - startPage < maxNums - 1) startPage = Math.max(1, endPage - maxNums + 1);
+	for (var i = startPage; i <= endPage; i++) {
 		if (i === currentPage) {
-			pageHtml += '<li class="page-item active"><span class="page-link">' + i + '</span></li>';
+			html += '<button class="pager-btn active">' + i + '</button>';
 		} else {
-			pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews2(' + i + ')">' + i + '</a></li>';
+			html += '<button class="pager-btn" onclick="loadGallery(' + i + ')">' + i + '</button>';
 		}
 	}
 	if (currentPage < totalPages) {
-		pageHtml += '<li class="page-item"><a class="page-link" href="javascript:;" onclick="loadNews2(' + (currentPage + 1) + ')">Next</a></li>';
+		html += '<button class="pager-btn" onclick="loadGallery(' + (currentPage + 1) + ')">Next →</button>';
 	} else {
-		pageHtml += '<li class="page-item disabled"><a class="page-link" href="javascript:;" onclick="loadNews2(' + (currentPage + 1) + ')">Next</a></li>';
+		html += '<button class="pager-btn disabled">Next →</button>';
 	}
-	pageHtml += '</ul></nav>';
-	$('#ajax_pager2').html(pageHtml);
+	$('#ajax_pager2').html(html);
 }
 
-let currentPage2 = 1;
-loadNews2(currentPage2);
+loadGallery(1);
 </script>
 
-<link rel="stylesheet" href="{pboot:sitetplpath}/fancybox/ui-5.0.36/dist/fancybox/fancybox.css" />
 <script src="{pboot:sitetplpath}/fancybox/ui-5.0.36/dist/fancybox/fancybox.umd.js"></script>
 <script>
-	$(document).ready(function() {
-		Fancybox.bind('[data-fancybox="gallery"]', {				
-			Thumbs : {
-			type: "classic"
-			}
-		});    
-	})
+Fancybox.bind('[data-fancybox="gallery"]', { Thumbs: { type: "classic" } });
 </script>
 
-{include file=comm/foot.html}
+<!-- Footer -->
+<footer class="footer">
+	<div class="container">
+		<div class="footer-grid">
+			<div>
+				<h4>{pboot:companyname}</h4>
+				<ul>
+					<li><span><i class="fa fa-map-marker"></i> {pboot:companyaddress}</span></li>
+					<li><span><i class="fa fa-phone"></i> {pboot:companyphone}</span></li>
+					<li><span><i class="fa fa-envelope-o"></i> {pboot:companyemail}</span></li>
+					<li><span><i class="fa fa-mobile"></i> {pboot:companymobile}</span></li>
+				</ul>
+				<div class="footer-social">
+					<a href="#" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+					<a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+				</div>
+			</div>
+			<div>
+				<h4>Company</h4>
+				<ul>
+					<li><a href="{label:app_host}/aboutus/">About Us</a></li>
+					<li><a href="{label:app_host}/news/">News</a></li>
+					<li><a href="{label:app_host}/contact/">Contact Us</a></li>
+				</ul>
+			</div>
+			<div>
+				<h4>Products</h4>
+				<ul>
+					{pboot:nav num=7 parent=3}
+					<li><a href="[nav:link]">[nav:name]</a></li>
+					{/pboot:nav}
+				</ul>
+			</div>
+			<div>
+				<h4>Support</h4>
+				<ul>
+					<li><a href="{label:app_host}/contact/">Sales Inquiry</a></li>
+					<li><a href="{label:app_host}/contact/">Technical Support</a></li>
+					<li><a href="{label:app_host}/contact/">OEM/ODM Service</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="footer-bottom">{pboot:sitecopyright}</div>
+	</div>
+</footer>
+
+<script>
+var ro = new IntersectionObserver(function(entries){
+	entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('active') });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(el){ ro.observe(el) });
+</script>
 
 </body>
 </html>

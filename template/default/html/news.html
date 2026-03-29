@@ -6,7 +6,7 @@
 	<meta name="keywords" content="{pboot:pagekeywords}">
 	<meta name="description" content="{pboot:pagedescription}">
 	<link rel="canonical" href="{label:app_host}{pboot:sitepath}/">
-	<meta property="og:type" content="website">
+	<meta property="og:type" content="article">
 	<meta property="og:title" content="{pboot:pagetitle}">
 	<meta property="og:description" content="{pboot:pagedescription}">
 	<meta property="og:site_name" content="{pboot:companyname}">
@@ -16,40 +16,169 @@
 	<meta name="twitter:description" content="{pboot:pagedescription}">
 	<meta name="robots" content="index, follow">
 	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,shrink-to-fit=no">
-	<link rel="stylesheet" href="{pboot:sitetplpath}/bootstrap/css/bootstrap.min.css" >
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" href="{pboot:sitetplpath}/css/aoyun.css?v=v1.3.5" >
-	<link rel="stylesheet" href="{pboot:sitetplpath}/swiper-4.3.5/css/swiper.min.css">
-	<link rel="stylesheet" href="{pboot:sitetplpath}/css/animate.css">
-	<link rel="stylesheet" href="{pboot:sitetplpath}/css/custom.css">
 	<link rel="shortcut icon" href="{pboot:sitepath}/favicon.ico" type="image/x-icon">
-	<script src="{pboot:sitetplpath}/js/jquery-1.12.4.min.js" ></script>
+	<link rel="preconnect" href="https://r2.gtcodestar.com.cn" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1d1d1f;background:#fff;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none;transition:all .3s}
+img{max-width:100%;height:auto}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;width:100%;z-index:1000;padding:0 40px;height:56px;display:flex;align-items:center;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);box-shadow:0 1px 0 rgba(0,0,0,.06)}
+.nav-inner{width:100%;max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-logo img{height:22px}
+.nav-menu{display:flex;gap:28px;list-style:none}
+.nav-menu a{color:rgba(0,0,0,.7);font-size:13px;font-weight:500;letter-spacing:.3px}
+.nav-menu a:hover{color:#1d1d1f}
+.nav-toggle{display:none;background:0;border:0;color:#1d1d1f;font-size:22px;cursor:pointer}
+
+/* Hero */
+.article-hero{padding:120px 0 40px;background:#f5f5f7;text-align:center}
+.article-hero h1{font-size:clamp(28px,4.5vw,44px);font-weight:800;letter-spacing:-1px;line-height:1.2;max-width:800px;margin:0 auto 16px}
+.article-hero .meta{font-size:14px;color:#6e6e73}
+
+/* 文章内容 */
+.article-body{padding:48px 0 60px}
+.article-content{max-width:800px;margin:0 auto}
+.article-content .content{font-size:16px;line-height:1.9;color:#333}
+.article-content .content p{margin-bottom:20px}
+.article-content .content img{border-radius:12px;margin:24px 0}
+.article-content .content h2,.article-content .content h3{font-weight:700;margin:32px 0 16px;color:#1d1d1f}
+.article-content .content h2{font-size:24px}
+.article-content .content h3{font-size:20px}
+.article-content .content ul,.article-content .content ol{padding-left:24px;margin-bottom:20px}
+.article-content .content li{margin-bottom:8px}
+.article-content .content blockquote{border-left:4px solid #0071e3;padding:16px 24px;margin:24px 0;background:#f5f5f7;border-radius:0 12px 12px 0;color:#6e6e73;font-style:italic}
+.article-content .content table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
+.article-content .content table td,.article-content .content table th{padding:12px 16px;border:1px solid #e5e5e5}
+.article-content .content table th{background:#f5f5f7;font-weight:600}
+
+/* 上下篇 */
+.prev-next{max-width:800px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:40px 0;border-top:1px solid #e5e5e5;gap:24px}
+.prev-next p{margin:0;font-size:14px;color:#6e6e73}
+.prev-next a{color:#0071e3;font-weight:500}
+.prev-next a:hover{text-decoration:underline}
+
+/* 动画 */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal.active{opacity:1;transform:translateY(0)}
+
+/* Footer */
+.footer{padding:60px 0 30px;background:#1d1d1f;color:#fff}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+.footer h4{font-size:14px;font-weight:600;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px}
+.footer ul{list-style:none}
+.footer li{margin-bottom:10px}
+.footer li a,.footer li span{color:rgba(255,255,255,.4);font-size:13px}
+.footer li a:hover{color:#0071e3}
+.footer-bottom{margin-top:40px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);text-align:center;color:rgba(255,255,255,.25);font-size:12px}
+.footer-social{display:flex;gap:10px;margin-top:12px}
+.footer-social a{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.15);border-radius:50%;color:rgba(255,255,255,.5);font-size:14px;transition:all .3s}
+.footer-social a:hover{border-color:#0071e3;color:#0071e3}
+
+@media(max-width:768px){
+	.nav{padding:0 20px}
+	.nav-menu{display:none;position:absolute;top:56px;left:0;width:100%;background:rgba(255,255,255,.97);flex-direction:column;padding:20px 24px;gap:16px}
+	.nav-menu.open{display:flex}
+	.nav-toggle{display:block}
+	.prev-next{flex-direction:column;align-items:flex-start}
+	.footer-grid{grid-template-columns:1fr 1fr;gap:30px}
+}
+	</style>
 </head>
 <body>
-	
-   
-{include file=comm/head.html}
 
-
-{include file=comm/top.html}
-
-<div class="container pages">
-
-	<!-- 当前位置 -->
-	<div class="text-left position mb-3 d-none d-md-block">{pboot:position separator='>'}</div>
-  	 
-  	{include file=comm/sortnav.html}
-
-    <h2 class="text-center fs-sm-28 fs-20 mt-3">{content:title}</h2>
-	<div class="content mb-3">{content:content}</div>
-	<div class="text-secondary lh-2">
-		<p>上一篇：{content:precontent}</p>
-		<p>下一篇：{content:nextcontent}</p>
+<!-- 导航 -->
+<nav class="nav">
+	<div class="nav-inner">
+		<a class="nav-logo" href="{pboot:sitepath}/">
+			<img src="{pboot:sitelogo}" alt="{pboot:companyname}">
+		</a>
+		<button class="nav-toggle" onclick="document.querySelector('.nav-menu').classList.toggle('open')" aria-label="Menu">☰</button>
+		<ul class="nav-menu">
+			<li><a href="{pboot:sitepath}/">Home</a></li>
+			{pboot:nav num=10 parent=0}
+			<li><a href="[nav:link]">[nav:name]</a></li>
+			{/pboot:nav}
+		</ul>
 	</div>
-</div>
+</nav>
 
+<!-- Hero -->
+<section class="article-hero">
+	<h1 class="reveal">{content:title}</h1>
+	<div class="meta reveal">{content:date}</div>
+</section>
 
-{include file=comm/foot.html}
+<!-- 文章内容 -->
+<section class="article-body">
+	<div class="container">
+		<div class="article-content reveal">
+			<div class="content">{content:content}</div>
+		</div>
+		<div class="prev-next">
+			<p>Previous: {content:precontent}</p>
+			<p>Next: {content:nextcontent}</p>
+		</div>
+	</div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+	<div class="container">
+		<div class="footer-grid">
+			<div>
+				<h4>{pboot:companyname}</h4>
+				<ul>
+					<li><span><i class="fa fa-map-marker"></i> {pboot:companyaddress}</span></li>
+					<li><span><i class="fa fa-phone"></i> {pboot:companyphone}</span></li>
+					<li><span><i class="fa fa-envelope-o"></i> {pboot:companyemail}</span></li>
+					<li><span><i class="fa fa-mobile"></i> {pboot:companymobile}</span></li>
+				</ul>
+				<div class="footer-social">
+					<a href="#" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+					<a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+				</div>
+			</div>
+			<div>
+				<h4>Company</h4>
+				<ul>
+					<li><a href="{label:app_host}/aboutus/">About Us</a></li>
+					<li><a href="{label:app_host}/news/">News</a></li>
+					<li><a href="{label:app_host}/contact/">Contact Us</a></li>
+				</ul>
+			</div>
+			<div>
+				<h4>Products</h4>
+				<ul>
+					{pboot:nav num=7 parent=3}
+					<li><a href="[nav:link]">[nav:name]</a></li>
+					{/pboot:nav}
+				</ul>
+			</div>
+			<div>
+				<h4>Support</h4>
+				<ul>
+					<li><a href="{label:app_host}/contact/">Sales Inquiry</a></li>
+					<li><a href="{label:app_host}/contact/">Technical Support</a></li>
+					<li><a href="{label:app_host}/contact/">OEM/ODM Service</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="footer-bottom">{pboot:sitecopyright}</div>
+	</div>
+</footer>
+
+<script>
+var ro = new IntersectionObserver(function(entries){
+	entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('active') });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(el){ ro.observe(el) });
+</script>
 
 <!-- 文章结构化数据 -->
 {pboot:content id=-1}
