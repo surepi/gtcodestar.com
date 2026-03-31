@@ -22,5 +22,8 @@ if (PHP_VERSION < '5.4') {
 // 引用内核启动文件
 require dirname(__FILE__) . '/core/start.php';
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// 生产环境关闭错误显示
+error_reporting(0);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', ROOT_PATH . '/runtime/php_errors.log');

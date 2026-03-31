@@ -110,7 +110,11 @@ class Basic
         ini_set("session.use_trans_sid", 0);
         ini_set("session.use_cookies", 1);
         ini_set("session.use_only_cookies", 1);
-        session_set_cookie_params(0, SITE_DIR . '/', null, null, false);
+        ini_set("session.cookie_httponly", 1);
+        ini_set("session.cookie_secure", 1);  // 强制 HTTPS
+        ini_set("session.cookie_samesite", "Strict");
+        ini_set("session.use_strict_mode", 1);
+        session_set_cookie_params(0, SITE_DIR . '/', null, true, true);
         
         switch (Config::get('session.handler')) {
             case 'memcache':

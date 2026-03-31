@@ -24,11 +24,45 @@
   Deny from all
 </FilesMatch>
 
+# 禁止访问 Git 目录
+<DirectoryMatch "^/.*/\.git/">
+  Order deny,allow
+  Deny from all
+</DirectoryMatch>
+
+# 禁止访问配置文件
+<Files "database.php">
+  Order Allow,Deny
+  Deny from all
+</Files>
+
+# 禁止访问 runtime 目录
+<DirectoryMatch "runtime">
+  Order Allow,Deny
+  Deny from all
+</DirectoryMatch>
+
+# 禁止 upload 目录执行 PHP
+<Directory "static/upload">
+  php_flag engine off
+  AddType text/plain .php .php3 .php4 .php5 .phtml
+</Directory>
+
 # 防止目录列表
 Options -Indexes
 
 # 设置默认字符集
 AddDefaultCharset UTF-8
+
+# 添加安全响应头
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
 
 # 启用 gzip 压缩
 <IfModule mod_deflate.c>
