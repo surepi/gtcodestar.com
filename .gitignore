@@ -13,3 +13,7 @@ runtime/
 *.swp
 .DS_Store
 Thumbs.db
+node_modules/
+vendor/
+.env
+uploads/
