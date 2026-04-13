@@ -42,21 +42,22 @@ class Response
             $output['pageSize'] = PAGESIZE;
             $output['pageIndex'] = PAGE;
         } else {
-            if (is_array($data) || is_object($data)) {
-                //var_dump($data);
-                //$data = is_object($data) ? toArray($data) : $data;
+            // 兼容对象类型：仅在数组或实现 Countable 接口时使用 count()
+            if (is_array($data) || $data instanceof \Countable) {
                 $output['rowtotal'] = count($data);
                 $output['totalCount'] = 0;
                 $output['totalPages'] = 0;
                 $output['pageSize'] = 0;
                 $output['pageIndex'] = 0;
             } else {
+                // 对象或标量一律视为单条记录，避免对不可计数对象调用 count()
                 $output['rowtotal'] = 1;
                 $output['totalCount'] = 0;
                 $output['totalPages'] = 0;
                 $output['pageSize'] = 0;
                 $output['pageIndex'] = 0;
             }
+        }
         }
         
         if (PHP_VERSION >= 5.4) { // 中文不编码 5.4+
