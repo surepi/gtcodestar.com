@@ -4,6 +4,9 @@ static/upload/
 # 静态图片（大文件不进 Git）
 static/images/
 
+# SSL证书验证文件
+.well-known/
+
 # 敏感配置（含数据库密码等）
 config/database.php
 deploy.php
@@ -15,6 +18,7 @@ runtime/
 # 系统缓存
 *.log
 *.bak
+*.php_*
 *.swp
 .DS_Store
 Thumbs.db
