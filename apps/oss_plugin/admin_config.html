@@ -1,0 +1,100 @@
+<!-- OSS云存储配置 - 后台配置页面HTML片段 -->
+<!-- 将此片段添加到 apps/admin/view/default/system/config.html 的 tab-content 区域 -->
+
+<!-- 1. 在 <ul class="layui-tab-title"> 中添加 -->
+<li lay-id="t11">OSS云存储配置</li>
+
+<!-- 2. 在 <div class="layui-tab-content"> 中添加 -->
+<div class="layui-tab-item">
+    <form action="{url./admin/Config/index}" method="post" class="layui-form">
+        <input type="hidden" name="formcheck" value="{$formcheck}" >
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">启用OSS上传</label>
+            <div class="layui-input-block">
+                <input type="radio" name="oss_enabled" value="1" {if([$configs.oss_enabled.value]==1)} checked="checked" {/if} title="启用">
+                <input type="radio" name="oss_enabled" value="0" {if([$configs.oss_enabled.value]==0||[$configs.oss_enabled.value]=='')} checked="checked" {/if} title="禁用">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">OSS服务商</label>
+            <div class="layui-input-inline">
+                <select name="oss_provider">
+                    <option value="aliyun" {if([$configs.oss_provider.value]=='aliyun'||[$configs.oss_provider.value]=='')} selected{/if}>阿里云OSS</option>
+                    <option value="tencent" {if([$configs.oss_provider.value]=='tencent')} selected{/if}>腾讯云COS</option>
+                    <option value="aws" {if([$configs.oss_provider.value]=='aws')} selected{/if}>AWS S3</option>
+                    <option value="minio" {if([$configs.oss_provider.value]=='minio')} selected{/if}>MinIO</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">AccessKey ID</label>
+            <div class="layui-input-inline">
+                <input type="text" name="oss_access_key_id" value="{$configs.oss_access_key_id.value}" placeholder="请输入AccessKey ID" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">AccessKey Secret</label>
+            <div class="layui-input-inline">
+                <input type="password" name="oss_access_key_secret" value="{$configs.oss_access_key_secret.value}" placeholder="请输入AccessKey Secret" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">Endpoint</label>
+            <div class="layui-input-inline">
+                <input type="text" name="oss_endpoint" value="{$configs.oss_endpoint.value}" placeholder="如: https://oss-cn-hangzhou.aliyuncs.com" class="layui-input">
+            </div>
+            <span class="layui-icon layui-icon-about tips" data-content="阿里云示例: https://oss-cn-hangzhou.aliyuncs.com&#10;腾讯云示例: https://cos.ap-guangzhou.myqcloud.com"></span>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">Bucket名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="oss_bucket" value="{$configs.oss_bucket.value}" placeholder="请输入Bucket名称" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">自定义域名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="oss_custom_domain" value="{$configs.oss_custom_domain.value}" placeholder="如: https://cdn.yourdomain.com" class="layui-input">
+            </div>
+            <span class="layui-icon layui-icon-about tips" data-content="可选，CDN加速域名"></span>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">上传路径前缀</label>
+            <div class="layui-input-inline">
+                <input type="text" name="oss_upload_path" value="{$configs.oss_upload_path.value}" placeholder="默认: upload" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">文件权限</label>
+            <div class="layui-input-inline">
+                <select name="oss_acl">
+                    <option value="public-read" {if([$configs.oss_acl.value]=='public-read'||[$configs.oss_acl.value]=='')} selected{/if}>public-read（公开读）</option>
+                    <option value="private" {if([$configs.oss_acl.value]=='private')} selected{/if}>private（私有）</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit name="submit" value="oss">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- 3. 在 apps/admin/controller/system/ConfigController.php 的 switch 语句中添加 -->
+/*
+case 'oss':
+    success('修改成功！', url('/admin/Config/index' . get_tab('t11'), false));
+    break;
+*/

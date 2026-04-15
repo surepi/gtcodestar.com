@@ -1,0 +1,23 @@
+# 保护S3插件配置文件
+<Files "plugin.json">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# 保护配置控制器(如果不需要后台访问,可以注释掉)
+<Files "ConfigController.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# 保护S3核心类
+<Files "S3Storage.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# 禁止直接访问PHP文件(除了通过路由)
+<FilesMatch "\.php$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>

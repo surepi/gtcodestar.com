@@ -1,80 +1,15 @@
 <IfModule mod_rewrite.c>
-  Options +FollowSymlinks -MultiViews
+  Options +FollowSymlinks
   RewriteEngine On
 
-  # 强制 HTTPS（LiteSpeed 已有此配置，保留备用）
+  # --- 1. 强制跳转到 HTTPS 和 www.gtcodestar.com ---
+  # 如果不是以 www.gtcodestar.com 开头，或者不是 HTTPS 访问
+  RewriteCond %{HTTP_HOST} ^gtcodestar\.com$ [NC,OR]
   RewriteCond %{HTTPS} off
-  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-  # 根域名重定向到 www
-  RewriteCond %{HTTP_HOST} ^gtcodestar\.com [NC]
   RewriteRule ^(.*)$ https://www.gtcodestar.com/$1 [L,R=301]
 
-  # 如果目录或文件存在，直接访问
-  RewriteCond %{REQUEST_FILENAME} !-f
+  # --- 2. 你原有的伪静态路由规则 ---
   RewriteCond %{REQUEST_FILENAME} !-d
-
-  # 所有其他请求重定向到 index.php
-  RewriteRule ^(.*)$ index.php?p=$1 [QSA,L]
-</IfModule>
-
-# 防止访问敏感文件
-<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak|sql)$">
-  Order Allow,Deny
-  Deny from all
-</FilesMatch>
-
-# 禁止访问 Git 目录
-<DirectoryMatch "^/.*/\.git/">
-  Order deny,allow
-  Deny from all
-</DirectoryMatch>
-
-# 禁止访问配置文件
-<Files "database.php">
-  Order Allow,Deny
-  Deny from all
-</Files>
-
-# 禁止访问 runtime 目录
-<DirectoryMatch "runtime">
-  Order Allow,Deny
-  Deny from all
-</DirectoryMatch>
-
-# 禁止 upload 目录执行 PHP
-<Directory "static/upload">
-  php_flag engine off
-  AddType text/plain .php .php3 .php4 .php5 .phtml
-</Directory>
-
-# 防止目录列表
-Options -Indexes
-
-# 设置默认字符集
-AddDefaultCharset UTF-8
-
-# 添加安全响应头
-<IfModule mod_headers.c>
-  Header set X-Content-Type-Options "nosniff"
-  Header set X-Frame-Options "SAMEORIGIN"
-  Header set X-XSS-Protection "1; mode=block"
-  Header set Referrer-Policy "strict-origin-when-cross-origin"
-  Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
-  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-</IfModule>
-
-# 启用 gzip 压缩
-<IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
-</IfModule>
-
-# 设置缓存过期时间
-<IfModule mod_expires.c>
-  ExpiresActive On
-  ExpiresByType image/gif "access plus 1 month"
-  ExpiresByType image/jpeg "access plus 1 month"
-  ExpiresByType image/png "access plus 1 month"
-  ExpiresByType text/css "access plus 1 month"
-  ExpiresByType application/javascript "access plus 1 month"
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^(.*)$ index.php?p=$1 [QSA,PT,L]
 </IfModule>

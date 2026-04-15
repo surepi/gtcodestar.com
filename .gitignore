@@ -4,6 +4,11 @@ static/upload/
 # 静态图片（大文件不进 Git）
 static/images/
 
+# 敏感配置（含数据库密码等）
+config/database.php
+deploy.php
+.env
+
 # 运行时文件
 runtime/
 

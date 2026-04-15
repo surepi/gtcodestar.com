@@ -5,7 +5,7 @@ return array(
     'cmsname' => 'PbootCMS',
 
     // 模板内容输出缓存开关
-    'tpl_html_cache' => 0,
+    'tpl_html_cache' => 1,
 
     // 模板内容缓存有效时间（秒）
     'tpl_html_cache_time' => 3600,
@@ -24,15 +24,7 @@ return array(
         'deny_bs' => 'MJ12bot,IE6,IE7'
     ),
 
-    // 缓存服务器配置（从数据库读取，后台可切换）
-    'cache' => array(
-        'handler' => 'file'
-    ),
-
-    // 会话缓存配置（从数据库读取，后台可切换）
-    'session' => array(
-        'handler' => 'file'
-    ),
+    // 缓存和会话配置从数据库读取（后台可切换 file/redis）
 
     // 上传配置
     'upload' => array(
