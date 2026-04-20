@@ -1,0 +1,215 @@
+{include file=comm/common_html_head.html}
+	<link rel="stylesheet" href="{pboot:sitetplpath}/swiper-4.3.5/css/swiper.min.css">
+	<style>
+/* 面包屑 */
+.breadcrumb-bar{padding:72px 0 0;background:#f5f5f7}
+.breadcrumb-bar .container{padding-top:16px;padding-bottom:16px}
+.breadcrumb-bar span,.breadcrumb-bar a{font-size:13px;color:#6e6e73}
+.breadcrumb-bar a:hover{color:#0071e3}
+
+/* 产品详情主区域 */
+.product-detail{padding:40px 0 60px;background:#fff}
+.product-row{display:flex;gap:48px;align-items:flex-start}
+.product-gallery{flex:0 0 50%;max-width:50%}
+.product-info{flex:1;min-width:0}
+
+/* Swiper 主图 */
+.view{position:relative;background:#f5f5f7;border-radius:20px;overflow:hidden;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center}
+.view .swiper-container{width:100%;height:100%}
+.view .swiper-slide{display:flex;align-items:center;justify-content:center;padding:40px}
+.view .swiper-slide img{max-width:100%;max-height:100%;object-fit:contain;mix-blend-mode:multiply}
+.view .arrow-left,.view .arrow-right{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.8);backdrop-filter:blur(10px);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:#1d1d1f;transition:all .3s;text-decoration:none}
+.view .arrow-left{left:12px}
+.view .arrow-right{right:12px}
+.view .arrow-left:hover,.view .arrow-right:hover{background:rgba(255,255,255,1);box-shadow:0 2px 12px rgba(0,0,0,.1)}
+
+/* 缩略图 */
+.preview{margin-top:12px;position:relative}
+.preview .swiper-container{padding:0 4px}
+.preview .swiper-slide{width:72px!important;height:72px;border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .3s;background:#f5f5f7;display:flex;align-items:center;justify-content:center;margin-right:8px}
+.preview .swiper-slide img{max-width:90%;max-height:90%;object-fit:contain}
+.preview .active-nav{border-color:#0071e3}
+
+/* 产品信息 */
+.product-info h1{font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-1px;line-height:1.15;margin-bottom:20px}
+.product-desc{font-size:16px;line-height:1.8;color:#6e6e73;margin-bottom:32px}
+.product-cta{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:#0071e3;color:#fff;border-radius:100px;font-size:15px;font-weight:600;transition:all .3s}
+.product-cta:hover{background:#0077ed;color:#fff;transform:scale(1.02)}
+
+/* 详情内容 */
+.product-content{padding:60px 0 40px;border-top:1px solid #e5e5e5;margin-top:60px}
+.product-content h3{font-size:24px;font-weight:700;margin-bottom:24px}
+.product-content .content{font-size:15px;line-height:1.8;color:#333}
+.product-content .content img{border-radius:12px;margin:16px 0}
+.product-content .content table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+.product-content .content table td,.product-content .content table th{padding:12px 16px;border:1px solid #e5e5e5}
+.product-content .content table th{background:#f5f5f7;font-weight:600}
+
+/* 上下篇 */
+.prev-next{display:flex;justify-content:space-between;align-items:center;padding:40px 0;border-top:1px solid #e5e5e5;margin-top:40px;gap:24px}
+.prev-next p{margin:0;font-size:14px;color:#6e6e73}
+.prev-next a{color:#0071e3;font-weight:500}
+.prev-next a:hover{text-decoration:underline}
+
+/* 动画 */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+
+@media(max-width:768px){
+	.product-row{flex-direction:column;gap:24px}
+	.product-gallery{flex:none;max-width:100%;width:100%}
+	.prev-next{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+{include file=comm/site_nav.html}
+
+<!-- 面包屑 -->
+<div class="breadcrumb-bar">
+	<div class="container">{pboot:position separator=' &gt; '}</div>
+</div>
+
+<!-- 产品详情 -->
+<section class="product-detail">
+	<div class="container">
+		<div class="product-row">
+			<!-- 左侧图片 -->
+			<div class="product-gallery reveal">
+				<div class="view">
+					<a class="arrow-left" href="#">‹</a>
+					<a class="arrow-right" href="#">›</a>
+					<div class="swiper-container">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide">
+								<img src="{content:ico}" alt="{content:title}">
+							</div>
+							{pboot:pics num=10 id={content:id}}
+							<div class="swiper-slide">
+								<img src="[pics:src]" alt="[pics:title]">
+							</div>
+							{/pboot:pics}
+						</div>
+					</div>
+				</div>
+				<div class="preview">
+					<div class="swiper-container">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide active-nav">
+								<img src="{content:ico}" alt="{content:title}">
+							</div>
+							{pboot:pics num=10 id={content:id}}
+							<div class="swiper-slide">
+								<img src="[pics:src]" alt="[pics:title]">
+							</div>
+							{/pboot:pics}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- 右侧信息 -->
+			<div class="product-info reveal">
+				<h1>{content:title}</h1>
+				<div class="product-desc">{content:ext_description}</div>
+				<a class="product-cta" href="{label:app_host}/contact/">获取报价 →</a>
+			</div>
+		</div>
+
+		<!-- 详情内容 -->
+		<div class="product-content">
+			<h2>产品详情</h2>
+			<div class="content">{content:content}</div>
+		</div>
+
+		<!-- 上下篇 -->
+		<div class="prev-next">
+			<p>上一篇： {content:precontent}</p>
+			<p>下一篇： {content:nextcontent}</p>
+		</div>
+	</div>
+</section>
+
+<!-- Footer -->
+{include file=comm/site_footer.html}
+
+<script src="{pboot:sitetplpath}/swiper-4.3.5/js/swiper.min.js"></script>
+<script>
+var viewSwiper = new Swiper('.view .swiper-container', {
+	on:{
+		slideChangeTransitionStart: function() {
+			updateNavPosition()
+		}
+	}
+})
+
+$('.view .arrow-left').on('click', function(e) {
+	e.preventDefault()
+	if (viewSwiper.activeIndex == 0) {
+		viewSwiper.slideTo(viewSwiper.slides.length - 1, 500);
+		return
+	}
+	viewSwiper.slidePrev()
+})
+$('.view .arrow-right').on('click', function(e) {
+	e.preventDefault()
+	if (viewSwiper.activeIndex == viewSwiper.slides.length - 1) {
+		viewSwiper.slideTo(0, 500);
+		return
+	}
+	viewSwiper.slideNext()
+})
+
+var previewSwiper = new Swiper('.preview .swiper-container', {
+	slidesPerView: 'auto',
+	allowTouchMove: false,
+	on:{
+		tap: function() {
+			viewSwiper.slideTo(previewSwiper.clickedIndex)
+		}
+	}
+})
+
+function updateNavPosition() {
+	$('.preview .active-nav').removeClass('active-nav')
+	var activeNav = $('.preview .swiper-slide').eq(viewSwiper.activeIndex).addClass('active-nav')
+	if (!activeNav.hasClass('swiper-slide-visible')) {
+		if (activeNav.index() > previewSwiper.activeIndex) {
+			var thumbsPerNav = Math.floor(previewSwiper.width / activeNav.width()) - 1
+			previewSwiper.slideTo(activeNav.index() - thumbsPerNav)
+		} else {
+			previewSwiper.slideTo(activeNav.index())
+		}
+	}
+}
+
+// 滚动动画
+var ro = new IntersectionObserver(function(entries){
+	entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('active') });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(el){ ro.observe(el) });
+</script>
+
+<!-- 产品结构化数据 -->
+{pboot:content id=-1}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "[content:title]",
+  "description": "[content:description]",
+  "image": "[content:ico]",
+  "brand": {
+    "@type": "Brand",
+    "name": "{pboot:companyname}"
+  },
+  "manufacturer": {
+    "@type": "Organization",
+    "name": "{pboot:companyname}"
+  }
+}
+</script>
+{/pboot:content}
+
+</body>
+</html>

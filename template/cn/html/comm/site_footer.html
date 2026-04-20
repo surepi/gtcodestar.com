@@ -1,0 +1,45 @@
+<!-- 公共页脚 -->
+<footer class="footer">
+	<div class="container">
+		<div class="footer-grid">
+			<div>
+				<p class="footer-title">{pboot:companyname}</p>
+				<ul>
+					<li><span><i class="fa fa-map-marker"></i> {pboot:companyaddress}</span></li>
+					<li><span><i class="fa fa-phone"></i> {pboot:companyphone}</span></li>
+					<li><span><i class="fa fa-envelope-o"></i> {pboot:companyemail}</span></li>
+					<li><span><i class="fa fa-mobile"></i> {pboot:companymobile}</span></li>
+				</ul>
+				<div class="footer-social">
+					<a href="#" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+					<a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+				</div>
+			</div>
+			<div>
+				<p class="footer-title">Company</p>
+				<ul>
+					<li><a href="{label:app_host}/aboutus/">About Us</a></li>
+					<li><a href="{label:app_host}/news/">News</a></li>
+					<li><a href="{label:app_host}/contact/">Contact Us</a></li>
+				</ul>
+			</div>
+			<div>
+				<p class="footer-title">Products</p>
+				<ul>
+					{pboot:nav num=7 parent=3}
+					<li><a href="[nav:link]">[nav:name]</a></li>
+					{/pboot:nav}
+				</ul>
+			</div>
+			<div>
+				<p class="footer-title">Support</p>
+				<ul>
+					<li><a href="{label:app_host}/contact/">Sales Inquiry</a></li>
+					<li><a href="{label:app_host}/contact/">Technical Support</a></li>
+					<li><a href="{label:app_host}/contact/">OEM/ODM Service</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="footer-bottom">{pboot:sitecopyright}</div>
+	</div>
+</footer>

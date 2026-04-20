@@ -1,0 +1,14 @@
+<!-- 分页 -->
+{pboot:if({page:rows}>0)}
+   <nav aria-label="page navigation" class="my-4">
+     <div class="pagination justify-content-center">
+     	<a class="page-item page-link" href="{page:index}">First</a>
+     	<a class="page-item page-link" href="{page:pre}">Prev</a>
+      	{page:numbar}<!-- 数字条，小屏幕时自动隐藏-->
+      	<a class="page-item page-link" href="{page:next}">Next</a>
+      	<a class="page-item page-link" href="{page:last}">Last</a>
+     </div>
+   </nav>	
+{else}
+   	<div class="text-center my-5 text-secondary">No Data</div>
+{/pboot:if}

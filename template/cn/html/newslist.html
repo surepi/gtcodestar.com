@@ -1,0 +1,115 @@
+{include file=comm/common_html_head.html}
+	<link rel="stylesheet" href="{pboot:sitetplpath}/fancybox/ui-5.0.36/dist/fancybox/fancybox.css">
+	<style>
+/* 新闻区块 */
+.news-section{padding:60px 0 40px}
+.section-title{font-size:28px;font-weight:800;letter-spacing:-0.5px;margin-bottom:32px;text-align:center}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.n-card{background:#f5f5f7;border-radius:20px;overflow:hidden;transition:transform .4s,box-shadow .4s;cursor:pointer}
+.n-card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(0,0,0,.1)}
+.n-card-img{height:200px;overflow:hidden}
+.n-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.n-card:hover .n-card-img img{transform:scale(1.06)}
+.n-card-body{padding:24px 28px}
+.n-card-body h3{font-size:17px;font-weight:700;margin-bottom:8px;line-height:1.4}
+.n-card-body h3 a{color:#1d1d1f}
+.n-card-body h3 a:hover{color:#0071e3}
+.n-card-body p{font-size:14px;color:#6e6e73;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px}
+.n-card-body .date{font-size:12px;color:#86868b}
+.n-card-body .learn-more{display:inline-block;margin-top:8px;font-size:13px;font-weight:600;color:#0071e3}
+.n-card-body .learn-more:hover{text-decoration:underline}
+
+/* 胶囊分页 */
+.pager{padding:40px 0;display:flex;justify-content:center;gap:6px}
+.pager-btn{display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;padding:0 16px;border-radius:100px;font-size:14px;font-weight:500;color:#6e6e73;background:#f5f5f7;border:none;cursor:pointer;transition:all .3s}
+.pager-btn:hover{background:#e8e8ed;color:#1d1d1f}
+.pager-btn.active{background:#1d1d1f;color:#fff}
+.pager-btn.disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+
+/* Gallery */
+.gallery-section{padding:40px 0 80px;background:#f5f5f7}
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.gallery-item{border-radius:16px;overflow:hidden;aspect-ratio:16/10;cursor:pointer;position:relative}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.gallery-item:hover img{transform:scale(1.05)}
+
+@media(max-width:768px){
+	.news-grid,.gallery-grid{grid-template-columns:1fr}
+}
+@media(min-width:769px) and (max-width:1024px){
+	.news-grid,.gallery-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+{include file=comm/site_nav.html}
+
+<!-- Hero -->
+<section class="page-hero">
+	<h1 class="reveal">新闻与动态</h1>
+	<p class="reveal">及时了解公司新闻、行业洞察和产品更新。</p>
+</section>
+
+<!-- 新闻列表 -->
+<section class="news-section">
+	<div class="container">
+		<h2 class="section-title reveal">公司新闻</h2>
+		<div class="news-grid">
+			{pboot:list scode=2 num=9 order=date}
+			<div class="n-card reveal">
+				<a href="[list:link]">
+					<div class="n-card-img"><img src="[list:ico]" alt="[list:title]" loading="lazy"></div>
+					<div class="n-card-body">
+						<h3><a href="[list:link]">[list:title]</a></h3>
+						<p>[list:ext_news_description drophtml=1 dropblank=1 lencn=40]</p>
+						<span class="date">[list:date style=Y-m-d]</span>
+						<span class="learn-more">阅读更多 →</span>
+					</div>
+				</a>
+			</div>
+			{/pboot:list}
+		</div>
+		<div class="pager">
+			{pboot:if({page:rows}>0)}
+			<a class="pager-btn" href="{page:pre}">← 上一页</a>
+			{page:numbar}
+			<a class="pager-btn" href="{page:next}">下一页 →</a>
+			{/pboot:if}
+		</div>
+	</div>
+</section>
+
+<!-- Gallery -->
+<section class="gallery-section">
+	<div class="container">
+		<h2 class="section-title reveal">图集</h2>
+		<div class="gallery-grid">
+			{pboot:list scode=4 num=12 order=date}
+			<div class="gallery-item reveal">
+				<a data-fancybox="gallery" href="[list:ico]">
+					<img src="[list:ico]" alt="[list:title]" loading="lazy">
+				</a>
+			</div>
+			{/pboot:list}
+		</div>
+	</div>
+</section>
+
+<script src="{pboot:sitetplpath}/fancybox/ui-5.0.36/dist/fancybox/fancybox.umd.js"></script>
+<script>
+Fancybox.bind('[data-fancybox="gallery"]', { Thumbs: { type: "classic" } });
+</script>
+
+<!-- Footer -->
+{include file=comm/site_footer.html}
+
+<script>
+var ro = new IntersectionObserver(function(entries){
+	entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('active') });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(el){ ro.observe(el) });
+</script>
+
+</body>
+</html>

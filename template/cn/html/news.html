@@ -1,0 +1,135 @@
+{include file=comm/common_html_head.html}
+	<meta property="og:type" content="article">
+	<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1d1d1f;background:#fff;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none;transition:all .3s}
+img{max-width:100%;height:auto}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;width:100%;z-index:1000;padding:0 40px;height:56px;display:flex;align-items:center;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);box-shadow:0 1px 0 rgba(0,0,0,.06)}
+.nav-inner{width:100%;max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-logo img{height:22px}
+.nav-menu{display:flex;gap:28px;list-style:none}
+.nav-menu a{color:rgba(0,0,0,.7);font-size:13px;font-weight:500;letter-spacing:.3px}
+.nav-menu a:hover{color:#1d1d1f}
+.nav-toggle{display:none;background:0;border:0;color:#1d1d1f;font-size:22px;cursor:pointer}
+
+/* Hero */
+.article-hero{padding:120px 0 40px;background:#f5f5f7;text-align:center}
+.article-hero h1{font-size:clamp(28px,4.5vw,44px);font-weight:800;letter-spacing:-1px;line-height:1.2;max-width:800px;margin:0 auto 16px}
+.article-hero .meta{font-size:14px;color:#6e6e73}
+
+/* 文章内容 */
+.article-body{padding:48px 0 60px}
+.article-content{max-width:800px;margin:0 auto}
+.article-content .content{font-size:16px;line-height:1.9;color:#333}
+.article-content .content p{margin-bottom:20px}
+.article-content .content img{border-radius:12px;margin:24px 0}
+.article-content .content h2,.article-content .content h3{font-weight:700;margin:32px 0 16px;color:#1d1d1f}
+.article-content .content h2{font-size:24px}
+.article-content .content h3{font-size:20px}
+.article-content .content ul,.article-content .content ol{padding-left:24px;margin-bottom:20px}
+.article-content .content li{margin-bottom:8px}
+.article-content .content blockquote{border-left:4px solid #0071e3;padding:16px 24px;margin:24px 0;background:#f5f5f7;border-radius:0 12px 12px 0;color:#6e6e73;font-style:italic}
+.article-content .content table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
+.article-content .content table td,.article-content .content table th{padding:12px 16px;border:1px solid #e5e5e5}
+.article-content .content table th{background:#f5f5f7;font-weight:600}
+
+/* 上下篇 */
+.prev-next{max-width:800px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:40px 0;border-top:1px solid #e5e5e5;gap:24px}
+.prev-next p{margin:0;font-size:14px;color:#6e6e73}
+.prev-next a{color:#0071e3;font-weight:500}
+.prev-next a:hover{text-decoration:underline}
+
+/* 动画 */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal.active{opacity:1;transform:translateY(0)}
+
+/* Footer */
+.footer{padding:60px 0 30px;background:#1d1d1f;color:#fff}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+.footer h4{font-size:14px;font-weight:600;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px}
+.footer ul{list-style:none}
+.footer li{margin-bottom:10px}
+.footer li a,.footer li span{color:rgba(255,255,255,.4);font-size:13px}
+.footer li a:hover{color:#0071e3}
+.footer-bottom{margin-top:40px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);text-align:center;color:rgba(255,255,255,.25);font-size:12px}
+.footer-social{display:flex;gap:10px;margin-top:12px}
+.footer-social a{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.15);border-radius:50%;color:rgba(255,255,255,.5);font-size:14px;transition:all .3s}
+.footer-social a:hover{border-color:#0071e3;color:#0071e3}
+
+@media(max-width:768px){
+	.nav{padding:0 20px}
+	.nav-menu{display:none;position:absolute;top:56px;left:0;width:100%;background:rgba(255,255,255,.97);flex-direction:column;padding:20px 24px;gap:16px}
+	.nav-menu.open{display:flex}
+	.nav-toggle{display:block}
+	.prev-next{flex-direction:column;align-items:flex-start}
+	.footer-grid{grid-template-columns:1fr 1fr;gap:30px}
+}
+	h1,h2,h3,.hero h1,.section-title h2,.page-hero h1{font-family:'Poppins','Inter',sans-serif}
+</style>
+</head>
+<body>
+
+{include file=comm/site_nav.html}
+
+<!-- Hero -->
+<section class="article-hero">
+	<h1 class="reveal">{content:title}</h1>
+	<div class="meta reveal">{content:date}</div>
+</section>
+
+<!-- 文章内容 -->
+<section class="article-body">
+	<div class="container">
+		<div class="article-content reveal">
+			<div class="content">{content:content}</div>
+		</div>
+		<div class="prev-next">
+			<p>上一篇： {content:precontent}</p>
+			<p>下一篇： {content:nextcontent}</p>
+		</div>
+	</div>
+</section>
+
+<!-- Footer -->
+{include file=comm/site_footer.html}
+
+<script>
+var ro = new IntersectionObserver(function(entries){
+	entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('active') });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(el){ ro.observe(el) });
+</script>
+
+<!-- 文章结构化数据 -->
+{pboot:content id=-1}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "[content:title]",
+  "description": "[content:description]",
+  "image": "[content:ico]",
+  "datePublished": "[content:date]",
+  "dateModified": "[content:date]",
+  "author": {
+    "@type": "Organization",
+    "name": "{pboot:companyname}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "{pboot:companyname}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{pboot:sitelogo}"
+    }
+  }
+}
+</script>
+{/pboot:content}
+
+</body>
+</html>

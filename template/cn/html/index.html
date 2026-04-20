@@ -1,0 +1,464 @@
+{include file=comm/common_html_head.html}
+	<style>
+/* ===== Index overrides ===== */
+body{overflow-x:hidden}
+.reveal{opacity:0;transform:translateY(50px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+.reveal.active{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-80px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+.reveal-left.active{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(80px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+.reveal-right.active{opacity:1;transform:translateX(0)}
+.delay-1{transition-delay:.15s}
+.delay-2{transition-delay:.3s}
+.delay-3{transition-delay:.45s}
+.delay-4{transition-delay:.6s}
+.nav{transition:all .4s;background:rgba(255,255,255,.85)}
+.nav.scrolled{background:rgba(255,255,255,.92);box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.nav.scrolled .nav-menu a{color:rgba(0,0,0,.7)}
+.nav.scrolled .nav-menu a:hover{color:#1d1d1f}
+.nav.scrolled .nav-toggle{color:#1d1d1f}
+.nav.scrolled .nav-logo img{opacity:1}
+
+/* ===== Hero 全屏 ===== */
+.hero{position:relative;height:100vh;min-height:600px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero-slides{position:absolute;inset:0;z-index:0}
+.hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.5s ease}
+.hero-slide.active{opacity:1}
+.hero-slide img{width:100%;height:100%;object-fit:cover}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.3) 0%,rgba(0,0,0,.6) 100%);z-index:1}
+.hero-content{position:relative;z-index:2;text-align:center;max-width:900px;padding:0 24px;transition:color .8s ease}
+.hero-content.dark-text{color:#1d1d1f}
+.hero-content.dark-text p{color:rgba(0,0,0,.6)}
+.hero-content.dark-text .hero-eyebrow{color:#0071e3}
+.hero-content.dark-text .btn-ghost{border-color:rgba(0,0,0,.3);color:#1d1d1f}
+.hero-content.dark-text .btn-ghost:hover{border-color:#1d1d1f;background:rgba(0,0,0,.05)}
+.hero-eyebrow{font-size:14px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#0071e3;margin-bottom:20px}
+.hero h1{font-size:clamp(36px,7vw,76px);font-weight:800;line-height:1.05;letter-spacing:-2px;margin-bottom:24px}
+.hero p{font-size:clamp(16px,2vw,21px);color:rgba(255,255,255,.65);line-height:1.6;max-width:600px;margin:0 auto 40px}
+.btn-primary{display:inline-block;padding:14px 36px;background:#0071e3;color:#000;font-size:15px;font-weight:600;border-radius:100px;transition:all .3s;border:none;cursor:pointer}
+.btn-primary:hover{background:#2997ff;transform:translateY(-1px);box-shadow:0 8px 30px rgba(0,170,255,.3);color:#000}
+.btn-ghost{display:inline-block;padding:14px 36px;border:1.5px solid rgba(255,255,255,.4);color:#fff;font-size:15px;font-weight:500;border-radius:100px;margin-left:12px;transition:all .3s}
+.btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.1)}
+.hero-scroll{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:2;animation:bounce 2s infinite}
+.hero-scroll span{display:block;width:24px;height:38px;border:2px solid rgba(255,255,255,.4);border-radius:12px;position:relative}
+.hero-scroll span::after{content:'';width:4px;height:8px;background:rgba(255,255,255,.6);border-radius:2px;position:absolute;top:6px;left:50%;transform:translateX(-50%);animation:scrollDot 2s infinite}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+@keyframes scrollDot{0%{opacity:1;top:6px}100%{opacity:0;top:20px}}
+
+/* ===== 产品网格 ===== */
+.products-scroll{padding:100px 0;background:#f5f5f7}
+.section-title{text-align:center;margin-bottom:60px}
+.section-title h2{font-size:clamp(28px,4vw,48px);font-weight:700;letter-spacing:-1px;color:#1d1d1f}
+.section-title .subtitle{font-size:17px;color:#6e6e73;margin-top:12px}
+.product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.product-card{background:#fff;border-radius:20px;overflow:hidden;transition:transform .4s,box-shadow .4s;border:none;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.product-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 12px 40px rgba(0,0,0,.12)}
+.product-card .p-img{height:260px;display:flex;align-items:center;justify-content:center;padding:24px;background:#fafafa}
+.product-card .p-img img{max-height:100%;max-width:100%;object-fit:contain;transition:transform .5s;mix-blend-mode:multiply}
+.product-card:hover .p-img img{transform:scale(1.1)}
+.product-card .p-info{padding:20px;text-align:center}
+.product-card .p-info h3{font-size:15px;font-weight:600;margin-bottom:6px;color:#1d1d1f}
+.product-card .p-info span{font-size:12px;color:#6e6e73;text-transform:uppercase;letter-spacing:1px}
+.view-all{text-align:center;margin-top:50px}
+.btn-outline{display:inline-block;padding:12px 32px;border:1px solid rgba(0,0,0,.2);color:#1d1d1f;font-size:14px;font-weight:500;border-radius:100px;letter-spacing:.5px;transition:all .3s}
+.btn-outline:hover{border-color:#0071e3;color:#0071e3;background:rgba(0,113,227,.05)}
+@media(max-width:1024px){.product-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){.product-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.product-grid{grid-template-columns:1fr}}
+
+/* ===== 产品分类网格 ===== */
+.categories{padding:100px 0;background:#fff}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.cat-card{position:relative;background:#f5f5f7;border-radius:16px;overflow:hidden;padding:0;min-height:260px;border:none;transition:all .4s;display:flex;flex-direction:column}
+.cat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,113,227,.05),transparent);opacity:0;transition:opacity .4s}
+.cat-card:hover::before{opacity:1}
+.cat-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,.08)}
+.cat-card .cat-thumb{height:180px;display:flex;align-items:center;justify-content:center;padding:20px;background:#fff}
+.cat-card .cat-thumb img{max-height:140px;max-width:100%;object-fit:contain;transition:transform .5s;mix-blend-mode:multiply}
+.cat-card:hover .cat-thumb img{transform:scale(1.08)}
+.cat-card .cat-body{padding:20px 24px;flex:1;display:flex;flex-direction:column;justify-content:center}
+.cat-card h3{font-size:16px;font-weight:700;margin-bottom:6px;position:relative;z-index:1;color:#1d1d1f}
+.cat-card p{font-size:13px;color:#0071e3;position:relative;z-index:1}
+@media(max-width:768px){
+	.cat-grid{grid-template-columns:1fr}
+}
+
+/* ===== 关于我们（左右对称）===== */
+.about-section{padding:120px 0;background:#f5f5f7}
+.about-row{display:flex;align-items:center;gap:80px}
+.about-text{flex:1}
+.about-text .eyebrow{font-size:13px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#0071e3;margin-bottom:16px}
+.about-text h2{font-size:clamp(28px,4vw,42px);font-weight:700;letter-spacing:-1px;line-height:1.2;margin-bottom:24px;color:#1d1d1f}
+.about-text p{font-size:16px;color:#6e6e73;line-height:1.8;margin-bottom:16px}
+.about-media{flex:1;position:relative}
+.about-media img{width:100%;border-radius:20px}
+.about-media video{width:100%;border-radius:20px}
+@media(max-width:768px){
+	.about-row{flex-direction:column;gap:40px}
+}
+
+/* ===== 数据统计条 ===== */
+.stats-bar{padding:80px 0;background:#fff}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;text-align:center}
+.stat-item .number{font-size:clamp(36px,5vw,52px);font-weight:800;background:linear-gradient(135deg,#0071e3,#40a9ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-item .label{font-size:13px;color:#6e6e73;text-transform:uppercase;letter-spacing:2px;margin-top:8px}
+@media(max-width:768px){
+	.stats-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ===== 新闻动态 ===== */
+.news-section{padding:100px 0;background:#f5f5f7}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:50px}
+.news-card{background:#fff;border-radius:16px;overflow:hidden;border:none;transition:all .4s;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.news-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,.1)}
+.news-card .n-img{height:200px;overflow:hidden}
+.news-card .n-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.news-card:hover .n-img img{transform:scale(1.06)}
+.news-card .n-body{padding:24px}
+.news-card .n-body h3{font-size:16px;font-weight:600;line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.news-card .n-body h3 a{color:#1d1d1f}
+.news-card .n-body h3 a:hover{color:#0071e3}
+.news-card .n-date{font-size:12px;color:#6e6e73}
+@media(max-width:768px){
+	.news-grid{grid-template-columns:1fr}
+}
+
+/* ===== 认证 Logo 墙 ===== */
+.cert-section{padding:100px 0;background:#fff;overflow:hidden}
+.cert-wall{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:50px}
+.cert-wall .cert-card{background:#f5f5f7;border-radius:16px;padding:12px;display:flex;align-items:center;justify-content:center;height:420px;opacity:0;transform:scale(.95);transition:opacity .8s ease,transform .8s ease}
+.cert-wall .cert-card.show{opacity:1;transform:scale(1)}
+.cert-wall .cert-card img{max-height:396px;max-width:100%;object-fit:contain}
+@media(max-width:768px){
+	.cert-wall{grid-template-columns:repeat(2,1fr);gap:12px}
+	.cert-wall .cert-card{height:180px;padding:8px}
+	.cert-wall .cert-card img{max-height:160px}
+}
+.gallery-section{padding:100px 0;background:#fff}
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:50px}
+.gallery-item{border-radius:12px;overflow:hidden;aspect-ratio:4/3;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.gallery-item:hover img{transform:scale(1.08)}
+@media(max-width:768px){
+	.gallery-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ===== CTA ===== */
+.cta{padding:120px 0;text-align:center;position:relative;overflow:hidden;background:#1d1d1f;color:#fff}
+.cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,113,227,.12) 0%,transparent 70%)}
+.cta-inner{position:relative;z-index:1}
+.cta h2{font-size:clamp(28px,5vw,48px);font-weight:700;letter-spacing:-1px;margin-bottom:16px;color:#fff}
+.cta p{font-size:18px;color:rgba(255,255,255,.5);margin-bottom:40px}
+
+.footer{border-top:none}
+.back-top{position:fixed;bottom:30px;right:30px;width:42px;height:42px;border-radius:50%;background:rgba(0,113,227,.85);color:#fff;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:999;font-size:16px;transition:all .3s;border:none}
+.back-top:hover{background:#0071e3;transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,113,227,.3)}
+	h1,h2,h3{font-family:'Poppins','Inter',sans-serif}
+</style>
+</head>
+<body>
+
+{include file=comm/site_nav.html}
+
+<!-- ========== Hero ========== -->
+<section class="hero">
+	<div class="hero-slides" id="heroSlides">
+		{pboot:slide num=6 gid=1}
+		<div class="hero-slide">
+			<img src="[slide:src]" alt="[slide:title]" fetchpriority="high">
+		</div>
+		{/pboot:slide}
+	</div>
+	<div class="hero-overlay"></div>
+	<div class="hero-content">
+		<div class="hero-eyebrow reveal">Since 2009</div>
+		<h1 class="reveal delay-1">Professional Barcode<br>Scanner Manufacturer</h1>
+		<p class="reveal delay-2">Trusted by businesses in 100+ countries. From retail to industrial, we deliver precision scanning solutions.</p>
+		<div class="reveal delay-3">
+			<a href="{label:app_host}/product/" class="btn-primary">Explore Products</a>
+			<a href="{label:app_host}/contact/" class="btn-ghost">Contact Sales</a>
+		</div>
+	</div>
+	<div class="hero-scroll"><span></span></div>
+</section>
+
+<!-- ========== 数据统计 ========== -->
+<section class="stats-bar">
+	<div class="container">
+		<div class="stats-grid">
+			<div class="stat-item reveal">
+				<div class="number">2009</div>
+				<div class="label">Established</div>
+			</div>
+			<div class="stat-item reveal delay-1">
+				<div class="number">100+</div>
+				<div class="label">Countries</div>
+			</div>
+			<div class="stat-item reveal delay-2">
+				<div class="number">15M+</div>
+				<div class="label">Users Worldwide</div>
+			</div>
+			<div class="stat-item reveal delay-3">
+				<div class="number">60+</div>
+				<div class="label">Patents</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ========== 产品横向滚动 ========== -->
+<section class="products-scroll">
+	<div class="container">
+		<div class="section-title reveal">
+			<h2>Featured Products</h2>
+			<div class="subtitle">High-performance scanning for every scenario</div>
+		</div>
+		<div class="product-grid">
+			{pboot:list scode=3 num=12 order=date}
+			<div class="product-card reveal">
+				<a href="[list:link]">
+					<div class="p-img">
+						<img src="[list:ico]" alt="[list:title]" loading="lazy">
+					</div>
+					<div class="p-info">
+						<h3>[list:title]</h3>
+						<span>[list:sortname]</span>
+					</div>
+				</a>
+			</div>
+			{/pboot:list}
+		</div>
+		<div class="view-all reveal">
+			<a href="{label:app_host}/product/" class="btn-outline">查看全部产品 →</a>
+		</div>
+	</div>
+</section>
+
+<!-- ========== 产品分类 ========== -->
+<section class="categories">
+	<div class="container">
+		<div class="section-title reveal">
+			<h2>Product Categories</h2>
+			<div class="subtitle">Solutions for every industry</div>
+		</div>
+		<div class="cat-grid">
+			{pboot:nav num=6 parent=3}
+			<a href="[nav:link]">
+				<div class="cat-card reveal">
+					<div class="cat-thumb">
+						{pboot:list scode=[nav:scode] num=1 order=date}
+						<img src="[list:ico]" alt="[nav:name]" loading="lazy">
+						{/pboot:list}
+					</div>
+					<div class="cat-body">
+						<h3>[nav:name]</h3>
+						<p>View Products →</p>
+					</div>
+				</div>
+			</a>
+			{/pboot:nav}
+		</div>
+	</div>
+</section>
+
+<!-- ========== 关于我们 ========== -->
+<section class="about-section">
+	<div class="container">
+		<div class="about-row">
+			<div class="about-text reveal-left">
+				<div class="eyebrow">About Us</div>
+				<h2>Leading Barcode Scanner Manufacturer Since 2009</h2>
+				{pboot:content id=1}
+				<p>[content:ext_single_description drophtml=1 dropblank=1 len=400 more='']</p>
+				<a href="[content:link]" class="btn-outline" style="margin-top:12px">了解更多 →</a>
+				{/pboot:content}
+			</div>
+			<div class="about-media reveal-right">
+				<img src="{label:r2_domain}/images/home_en/about/1.jpg" alt="About Gtcodestar" loading="lazy">
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ========== 认证 ========== -->
+<section class="cert-section">
+	<div class="container">
+		<div class="section-title reveal">
+			<h2>Certifications</h2>
+			<div class="subtitle">Quality assured by international standards</div>
+		</div>
+		<div class="cert-wall" id="certWall">
+			{pboot:list scode=5 num=12 order=sorting}
+			<div class="cert-card" data-cert>
+				<img src="[list:ico]" alt="Certification [list:title]" loading="lazy">
+			</div>
+			{/pboot:list}
+		</div>
+	</div>
+</section>
+
+<!-- ========== 新闻 ========== -->
+<section class="news-section">
+	<div class="container">
+		<div class="section-title reveal">
+			<h2>Latest News</h2>
+			<div class="subtitle">Stay updated with our latest innovations</div>
+		</div>
+		<div class="news-grid">
+			{pboot:list scode=2 num=3 order=date}
+			<div class="news-card reveal">
+				<a href="[list:link]">
+					<div class="n-img">
+						<img src="[list:ico]" alt="[list:title]" loading="lazy">
+					</div>
+					<div class="n-body">
+						<div class="n-date">[list:date style=Y-m-d]</div>
+						<h3><a href="[list:link]">[list:title]</a></h3>
+					</div>
+				</a>
+			</div>
+			{/pboot:list}
+		</div>
+		<div class="view-all reveal" style="margin-top:40px">
+			<a href="{label:app_host}/news/" class="btn-outline">More News →</a>
+		</div>
+	</div>
+</section>
+
+<!-- ========== 展会 Gallery ========== -->
+<section class="gallery-section" style="background:#f5f5f7">
+	<div class="container">
+		<div class="section-title reveal">
+			<h2>Global Exhibitions</h2>
+			<div class="subtitle">Meeting partners around the world</div>
+		</div>
+		<div class="gallery-grid">
+			{pboot:list scode=4 num=8 order=date}
+			<div class="gallery-item reveal">
+				<img src="[list:ico]" alt="Exhibition" loading="lazy">
+			</div>
+			{/pboot:list}
+		</div>
+	</div>
+</section>
+
+<!-- ========== CTA ========== -->
+<section class="cta">
+	<div class="cta-inner reveal">
+		<h2>Ready to Partner With Us?</h2>
+		<p>OEM & ODM solutions tailored to your business needs</p>
+		<a href="{label:app_host}/contact/" class="btn-primary">Get in Touch</a>
+	</div>
+</section>
+
+{include file=comm/site_footer.html}
+
+<!-- 返回顶部 -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+<script>
+// 导航滚动
+var nav=document.getElementById('mainNav');
+var backTop=document.getElementById('backTop');
+window.addEventListener('scroll',function(){
+	nav.classList.toggle('scrolled',window.scrollY>80);
+	backTop.style.display=window.scrollY>600?'flex':'none';
+});
+
+// 滚动动画
+var ro=new IntersectionObserver(function(entries){
+	entries.forEach(function(e){
+		if(e.isIntersecting)e.target.classList.add('active');
+	});
+},{threshold:0.12,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(function(el){ro.observe(el)});
+
+// Hero 幻灯片
+var slides=document.querySelectorAll('.hero-slide');
+
+// 证书 Logo 墙：每 3 秒切换一批（每次显示 4 张）
+var certCards=document.querySelectorAll('[data-cert]');
+if(certCards.length>0){
+	var perPage=4,certPage=0,totalPages=Math.ceil(certCards.length/perPage);
+	function showCertPage(p){
+		certCards.forEach(function(c,i){
+			c.classList.remove('show');
+			c.style.display='none';
+		});
+		var start=p*perPage;
+		for(var i=start;i<start+perPage&&i<certCards.length;i++){
+			certCards[i].style.display='flex';
+			setTimeout(function(el){el.classList.add('show')},50+((i-start)*100),certCards[i]);
+		}
+	}
+	showCertPage(0);
+	setInterval(function(){
+		certPage=(certPage+1)%totalPages;
+		showCertPage(certPage);
+	},3000);
+}
+if(slides.length>0){
+	slides[0].classList.add('active');
+	var heroContent=document.querySelector('.hero-content');
+
+	// 检测图片亮度，自动切换文字颜色
+	function detectBrightness(img){
+		try{
+			var canvas=document.createElement('canvas');
+			var ctx=canvas.getContext('2d');
+			canvas.width=50;canvas.height=50;
+			ctx.drawImage(img,0,0,50,50);
+			var data=ctx.getImageData(0,0,50,50).data;
+			var r=0,g=0,b=0,count=data.length/4;
+			for(var i=0;i<data.length;i+=4){r+=data[i];g+=data[i+1];b+=data[i+2]}
+			var brightness=(r/count*0.299+g/count*0.587+b/count*0.114);
+			return brightness;
+		}catch(e){return 0}
+	}
+
+	function updateTextColor(slide){
+		var img=slide.querySelector('img');
+		if(!img||!img.complete){return}
+		var brightness=detectBrightness(img);
+		if(brightness>150){
+			heroContent.classList.add('dark-text');
+		}else{
+			heroContent.classList.remove('dark-text');
+		}
+	}
+
+	// 首张图片加载完后检测
+	var firstImg=slides[0].querySelector('img');
+	if(firstImg){
+		if(firstImg.complete){updateTextColor(slides[0])}
+		else{firstImg.onload=function(){updateTextColor(slides[0])}}
+	}
+
+	if(slides.length>1){
+		var idx=0;
+		setInterval(function(){
+			slides[idx].classList.remove('active');
+			idx=(idx+1)%slides.length;
+			slides[idx].classList.add('active');
+			updateTextColor(slides[idx]);
+		},5000);
+	}
+}
+</script>
+
+<!-- 结构化数据 -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"Organization",
+  "name":"{pboot:companyname}",
+  "url":"{label:app_host}",
+  "logo":"{pboot:sitelogo}",
+  "description":"{pboot:pagedescription}",
+  "address":{"@type":"PostalAddress","addressLocality":"Foshan","addressCountry":"CN"},
+  "contactPoint":{"@type":"ContactPoint","telephone":"{pboot:companyphone}","email":"{pboot:companyemail}","contactType":"sales"}
+}
+</script>
+
+</body>
+</html>
