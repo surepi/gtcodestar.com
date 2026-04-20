@@ -1,0 +1,15 @@
+<!-- 公共导航 -->
+<nav class="nav" id="mainNav">
+	<div class="nav-inner">
+		<a class="nav-logo" href="{pboot:sitepath}/">
+			<img src="{pboot:sitelogo}" alt="{pboot:companyname}">
+		</a>
+		<button class="nav-toggle" onclick="document.querySelector('.nav-menu').classList.toggle('open')" aria-label="Menu">☰</button>
+		<ul class="nav-menu">
+			<li><a href="{pboot:sitepath}/">Home</a></li>
+			{pboot:nav num=10 parent=0}
+			<li><a href="[nav:link]">[nav:name]</a></li>
+			{/pboot:nav}
+		</ul>
+	</div>
+</nav>

@@ -1,25 +1,5 @@
-<!doctype html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>{pboot:pagetitle}</title>
-	<meta name="keywords" content="{pboot:pagekeywords}">
-	<meta name="description" content="{pboot:pagedescription}">
-	<link rel="canonical" href="{label:app_host}{pboot:sitepath}/">
+{include file=comm/common_html_head.html}
 	<meta property="og:type" content="article">
-	<meta property="og:title" content="{pboot:pagetitle}">
-	<meta property="og:description" content="{pboot:pagedescription}">
-	<meta property="og:site_name" content="{pboot:companyname}">
-	<meta property="og:image" content="{pboot:sitelogo}">
-	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:title" content="{pboot:pagetitle}">
-	<meta name="twitter:description" content="{pboot:pagedescription}">
-	<meta name="robots" content="index, follow">
-	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,shrink-to-fit=no">
-	<link rel="shortcut icon" href="{pboot:sitepath}/favicon.ico" type="image/x-icon">
-	<link rel="preconnect" href="https://r2.gtcodestar.com.cn" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1d1d1f;background:#fff;-webkit-font-smoothing:antialiased}
@@ -93,21 +73,7 @@ img{max-width:100%;height:auto}
 </head>
 <body>
 
-<!-- 导航 -->
-<nav class="nav">
-	<div class="nav-inner">
-		<a class="nav-logo" href="{pboot:sitepath}/">
-			<img src="{pboot:sitelogo}" alt="{pboot:companyname}">
-		</a>
-		<button class="nav-toggle" onclick="document.querySelector('.nav-menu').classList.toggle('open')" aria-label="Menu">☰</button>
-		<ul class="nav-menu">
-			<li><a href="{pboot:sitepath}/">Home</a></li>
-			{pboot:nav num=10 parent=0}
-			<li><a href="[nav:link]">[nav:name]</a></li>
-			{/pboot:nav}
-		</ul>
-	</div>
-</nav>
+{include file=comm/site_nav.html}
 
 <!-- Hero -->
 <section class="article-hero">
@@ -129,50 +95,7 @@ img{max-width:100%;height:auto}
 </section>
 
 <!-- Footer -->
-<footer class="footer">
-	<div class="container">
-		<div class="footer-grid">
-			<div>
-				<h4>{pboot:companyname}</h4>
-				<ul>
-					<li><span><i class="fa fa-map-marker"></i> {pboot:companyaddress}</span></li>
-					<li><span><i class="fa fa-phone"></i> {pboot:companyphone}</span></li>
-					<li><span><i class="fa fa-envelope-o"></i> {pboot:companyemail}</span></li>
-					<li><span><i class="fa fa-mobile"></i> {pboot:companymobile}</span></li>
-				</ul>
-				<div class="footer-social">
-					<a href="#" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
-					<a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
-				</div>
-			</div>
-			<div>
-				<h4>Company</h4>
-				<ul>
-					<li><a href="{label:app_host}/aboutus/">About Us</a></li>
-					<li><a href="{label:app_host}/news/">News</a></li>
-					<li><a href="{label:app_host}/contact/">Contact Us</a></li>
-				</ul>
-			</div>
-			<div>
-				<h4>Products</h4>
-				<ul>
-					{pboot:nav num=7 parent=3}
-					<li><a href="[nav:link]">[nav:name]</a></li>
-					{/pboot:nav}
-				</ul>
-			</div>
-			<div>
-				<h4>Support</h4>
-				<ul>
-					<li><a href="{label:app_host}/contact/">Sales Inquiry</a></li>
-					<li><a href="{label:app_host}/contact/">Technical Support</a></li>
-					<li><a href="{label:app_host}/contact/">OEM/ODM Service</a></li>
-				</ul>
-			</div>
-		</div>
-		<div class="footer-bottom">{pboot:sitecopyright}</div>
-	</div>
-</footer>
+{include file=comm/site_footer.html}
 
 <script>
 var ro = new IntersectionObserver(function(entries){
