@@ -266,11 +266,11 @@ class Pdo implements Builder
     public function amd($sql)
     {
         $result = $this->query($sql, 'master');
-        if ($result > 0) {
-            return $result;
-        } else {
-            return 0;
+        if ($result instanceof \PDOStatement) {
+            $num = $result->rowCount();
+            return $num > 0 ? $num : 0;
         }
+        return 0;
     }
 
     // 最近一次插入数据的自增字段值，返回int数据
