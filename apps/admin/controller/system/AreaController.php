@@ -190,7 +190,7 @@ class AreaController extends Controller
             error('传递的参数值错误！', - 1);
         }
         
-        if ($acode == 'cn') {
+        if ($acode == 'en') {
             error('系统内置区域不允许删除！', - 1);
         }
         

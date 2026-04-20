@@ -443,7 +443,7 @@ EOD;
         //如果开启缓存，则进行检测
         $lg = cookie('lg');
         if(empty($lg)){
-            $lg = 'cn';
+            $lg = 'en';
         }
         
         if (Config::get('open_wap') && (is_mobile() || Config::get('wap_domain') == get_http_host())) {
