@@ -23,3 +23,4 @@ backup/
 *.swp
 .DS_Store
 Thumbs.db
+.user.ini
