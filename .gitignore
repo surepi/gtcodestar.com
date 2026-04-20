@@ -14,6 +14,7 @@ deploy.php
 
 # 运行时文件
 runtime/
+backup/
 
 # 系统缓存
 *.log
