@@ -47,6 +47,21 @@
 3. 访问 `/admin.php` 登录后台，完成授权
 4. 后台 → 全局配置 → 定制标签 → 设置 `app host` 为你的域名
 
+## 多语言子目录支持
+
+本项目已增加“子目录语言”支持，主要改动包括：
+
+- 将当前语言识别从 `cookie('lg')` 拓展为 `/<lang>/...` URL 前缀
+- `apps/common/function.php` 新增 `get_request_lg()`，并修改 `get_lg()` 优先识别 URL 前缀
+- `apps/home/controller/IndexController.php` 在路由入口剥离语言前缀，保留现有页面解析逻辑
+- `core/basic/Url.php` 修改 `Url::home()`，自动生成带语言前缀的前端链接
+- `apps/home/controller/DoController.php` 语言切换后重定向到 `/cn/`、`/en/` 等子目录
+- `core/view/View.php` 缓存键改为使用语言码，避免不同语言页面缓存冲突
+- `apps/home/controller/SitemapController.php` Sitemap 中已添加 `xhtml:link rel="alternate" hreflang="..."`
+- `apps/home/controller/ParserController.php` 增加 `{pboot:hreflang}`，并在公用头部模板输出多语言 `hreflang` 标签
+
+推荐使用独立语言子目录后，搜索引擎会更容易识别多语言页面，SEO 友好度更高。
+
 ## R2 对象存储
 
 静态文件（图片、文档等）支持上传到 Cloudflare R2，无出口流量费。

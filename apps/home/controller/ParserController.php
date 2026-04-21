@@ -12,6 +12,7 @@ namespace app\home\controller;
 use app\home\model\DoModel;
 use app\home\model\MemberModel;
 use app\home\model\ParserModel;
+use core\basic\Config;
 use core\basic\Controller;
 use core\basic\Url;
 
@@ -160,7 +161,8 @@ class ParserController extends Controller
         $content = str_replace('{pboot:formcodestatus}', $this->config('form_check_code') === '0' ? 0 : 1, $content); // 是否开启表单验证码
 
         $content = str_replace('{pboot:checkcode}', CORE_DIR . '/code.php', $content); // 验证码路径
-        $content = str_replace('{pboot:lgpath}', Url::get('home/Do/area'), $content); // 多语言切换前置路径,如{pboot:lgpath}?lg=cn
+        $content = str_replace('{pboot:lgpath}', Url::home('home/Do/area'), $content); // 多语言切换前置路径,如{pboot:lgpath}?lg=cn
+        $content = str_replace('{pboot:hreflang}', $this->buildHreflangTags(), $content); // 多语言 hreflang 链接
 
         $content = str_replace('{pboot:appid}', $this->config('api_appid'), $content); // API认证用户
         $content = str_replace('{pboot:timestamp}', time(), $content); // 认证时间戳
@@ -191,6 +193,55 @@ class ParserController extends Controller
         }
 
         return $content;
+    }
+
+    // 生成 hreflang 链接
+    private function buildHreflangTags()
+    {
+        $lgs = Config::get('lgs') ?: [];
+        if (! $lgs) {
+            return '';
+        }
+
+        $uri = $_SERVER['REQUEST_URI'] ?? '';
+        $uri = strtok($uri, '?');
+        $uri = trim($uri, '/');
+        $siteDir = trim(SITE_INDEX_DIR, '/');
+        if ($siteDir && strpos($uri, $siteDir) === 0) {
+            $uri = trim(substr($uri, strlen($siteDir)), '/');
+        }
+
+        $langs = array_keys($lgs);
+        $first = preg_split('#/#', $uri, 2);
+        if (in_array($first[0], $langs, true)) {
+            $uri = $first[1] ?? '';
+        }
+
+        $link = '';
+        foreach ($lgs as $code => $config) {
+            $link .= $this->buildLanguageUrl($code, $uri, $code);
+        }
+
+        $default = get_default_lg();
+        if ($default && isset($lgs[$default])) {
+            $link .= $this->buildLanguageUrl($default, $uri, 'x-default');
+        }
+
+        return $link;
+    }
+
+    private function buildLanguageUrl($code, $uri, $hreflang)
+    {
+        $uri = trim($uri, '/');
+        $url = get_http_url();
+        if (SITE_INDEX_DIR) {
+            $url .= '/' . trim(SITE_INDEX_DIR, '/');
+        }
+        $url .= '/' . $code;
+        if ($uri !== '') {
+            $url .= '/' . $uri;
+        }
+        return '\n    <link rel="alternate" hreflang="' . $hreflang . '" href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" />';
     }
 
     // 解析站点标签

@@ -74,6 +74,19 @@ class IndexController extends Controller
         $path = escape_string($path);
         $path_arr = $path ? explode('/', $path) : array();
 
+        // 语言前缀处理
+        if (! empty($path_arr)) {
+            $lg = get_request_lg();
+            if ($lg && $path_arr[0] === $lg) {
+                cookie('lg', $lg);
+                if (! defined('CURRENT_LG')) {
+                    define('CURRENT_LG', $lg);
+                }
+                array_shift($path_arr);
+                $path = $path_arr ? implode('/', $path_arr) : '';
+            }
+        }
+
         // 开始路由
         if (isset($path_arr) && count($path_arr) > 0 && preg_match('/^[\w\-\/]+$/', $path)) {
             switch (strtolower($path_arr[0])) {

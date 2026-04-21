@@ -11,6 +11,7 @@ namespace app\home\controller;
 use core\basic\Controller;
 use app\home\model\SitemapModel;
 use core\basic\Url;
+use core\basic\Config;
 
 class SitemapController extends Controller
 {
@@ -26,8 +27,7 @@ class SitemapController extends Controller
     {
         header("Content-type:text/xml;charset=utf-8");
         $str = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-        //$str .= '<urlset>' . "\n";
-        $str .= '<urlset xmlns= "http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n" ;
+        $str .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' . "\n" ;
         $str .= $this->makeNode('', date('Y-m-d'), '1.00', 'always'); // 根目录
         
         $sorts = $this->model->getSorts();
@@ -60,12 +60,57 @@ class SitemapController extends Controller
     {
         $node = '
 <url>
-    <loc>' . get_http_url() . $link . '</loc>
+    <loc>' . get_http_url() . $link . '</loc>' . $this->makeAlternateLinks($link) . '
     <priority>' . $priority . '</priority>
     <lastmod>' . $date . '</lastmod>
     <changefreq>' . $changefreq . '</changefreq>
 </url>';
         return $node;
+    }
+
+    // 生成 alternate hreflang 链接
+    private function makeAlternateLinks($link)
+    {
+        $lgs = Config::get('lgs') ?: [];
+        $html = '';
+        foreach ($lgs as $code => $config) {
+            $url = $this->buildLanguageUrl($link, $code);
+            $html .= '\n    <xhtml:link rel="alternate" hreflang="' . $code . '" href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" />';
+        }
+        $default = get_default_lg();
+        if ($default && isset($lgs[$default])) {
+            $url = $this->buildLanguageUrl($link, $default);
+            $html .= '\n    <xhtml:link rel="alternate" hreflang="x-default" href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" />';
+        }
+        return $html;
+    }
+
+    // 构建指定语言 URL
+    private function buildLanguageUrl($link, $lang)
+    {
+        $link = trim($link);
+        $link = preg_replace('#^https?://[^/]+#i', '', $link);
+        $link = trim($link, '/');
+        $siteDir = trim(SITE_INDEX_DIR, '/');
+        if ($siteDir && strpos($link, $siteDir) === 0) {
+            $link = trim(substr($link, strlen($siteDir)), '/');
+        }
+        $lgs = Config::get('lgs') ?: [];
+        if ($lgs) {
+            $langs = implode('|', array_map('preg_quote', array_keys($lgs)));
+            $link = preg_replace('#^(' . $langs . ')/#i', '', $link);
+        }
+        $result = get_http_url();
+        if ($siteDir) {
+            $result .= '/' . $siteDir;
+        }
+        $result .= '/' . $lang;
+        if ($link !== '') {
+            $result .= '/' . $link;
+        } else {
+            $result .= '/';
+        }
+        return $result;
     }
 
     // 文本格式

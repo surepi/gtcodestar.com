@@ -214,15 +214,47 @@ function get_default_lg()
     return $default['acode'];
 }
 
+// 从请求 URL 中识别语言前缀
+function get_request_lg()
+{
+    $uri = $_SERVER['REQUEST_URI'] ?? '';
+    $uri = strtok($uri, '?');
+    $uri = trim($uri, '/');
+
+    if (SITE_INDEX_DIR) {
+        $prefix = trim(SITE_INDEX_DIR, '/');
+        if ($prefix && stripos($uri, $prefix) === 0) {
+            $uri = trim(substr($uri, strlen($prefix)), '/');
+        }
+    }
+
+    $parts = $uri ? explode('/', $uri) : array();
+    $lg = $parts[0] ?? '';
+    $lgs = Config::get('lgs');
+    if ($lg && isset($lgs[$lg])) {
+        return $lg;
+    }
+    return '';
+}
+
 // 获取当前语言并进行安全处理
 function get_lg()
 {
-    $lg = cookie('lg');
-    if (! $lg || ! preg_match('/^[\w\-]+$/', $lg)) {
-        $lg = get_default_lg();
-        cookie('lg', $lg);
+    if (! defined('CURRENT_LG')) {
+        $lg = get_request_lg();
+        if ($lg) {
+            cookie('lg', $lg);
+            define('CURRENT_LG', $lg);
+        } else {
+            $lg = cookie('lg');
+            if (! $lg || ! preg_match('/^[\w\-]+$/', $lg)) {
+                $lg = get_default_lg();
+            }
+            cookie('lg', $lg);
+            define('CURRENT_LG', $lg);
+        }
     }
-    return $lg;
+    return CURRENT_LG;
 }
 
 // 获取当前语言主题

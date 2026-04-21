@@ -124,14 +124,30 @@ class Url
             $path = trim($path, '/');
             
             if (! $path) { // 地址前缀
+                $lg = get_lg();
+                if ($lg) {
+                    $path = trim($lg . '/', '/');
+                }
                 if ($url_rule_type == 1) {
-                    $link = SITE_INDEX_DIR . '/index.php/';
+                    $link = SITE_INDEX_DIR . '/index.php/' . $path . '/';
                 } elseif ($url_rule_type == 2) {
-                    $link = SITE_INDEX_DIR . '/';
+                    $link = SITE_INDEX_DIR . '/' . $path . '/';
                 } else {
-                    $link = SITE_INDEX_DIR . '/?';
+                    $link = SITE_INDEX_DIR . '/?' . $path;
                 }
             } else {
+                $lg = get_lg();
+                if ($lg) {
+                    $lgs = Config::get('lgs') ?: [];
+                    if ($lgs) {
+                        $prefixes = implode('|', array_map('preg_quote', array_keys($lgs)));
+                    } else {
+                        $prefixes = '';
+                    }
+                    if (! $prefixes || ! preg_match('#^(' . $prefixes . ')(/|$)#i', $path)) {
+                        $path = trim($lg . '/' . $path, '/');
+                    }
+                }
                 switch ($url_rule_type) {
                     case '1': // 普通模式
                         $qs = $qs ? "?" . $qs : '';

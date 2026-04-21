@@ -29,8 +29,8 @@ class DoController extends Controller
             $lgs = $this->config('lgs');
             if (isset($lgs[$lg])) {
                 cookie('lg', $lg);
+                location(SITE_INDEX_DIR . '/' . $lg . '/');
             }
-            location(SITE_INDEX_DIR . '/');
         }
     }
 
