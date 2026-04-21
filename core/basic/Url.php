@@ -133,7 +133,7 @@ class Url
                 } elseif ($url_rule_type == 2) {
                     $link = SITE_INDEX_DIR . '/' . $path . '/';
                 } else {
-                    $link = SITE_INDEX_DIR . '/?' . $path;
+                    $link = SITE_INDEX_DIR . '/' . $path . '/?';
                 }
             } else {
                 $lg = get_lg();

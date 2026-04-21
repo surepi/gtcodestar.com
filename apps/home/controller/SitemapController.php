@@ -75,12 +75,12 @@ class SitemapController extends Controller
         $html = '';
         foreach ($lgs as $code => $config) {
             $url = $this->buildLanguageUrl($link, $code);
-            $html .= '\n    <xhtml:link rel="alternate" hreflang="' . $code . '" href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" />';
+            $html .= "\n    " . '<xhtml:link rel="alternate" hreflang="' . $code . '" href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" />';
         }
         $default = get_default_lg();
         if ($default && isset($lgs[$default])) {
             $url = $this->buildLanguageUrl($link, $default);
-            $html .= '\n    <xhtml:link rel="alternate" hreflang="x-default" href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" />';
+            $html .= "\n    " . '<xhtml:link rel="alternate" hreflang="x-default" href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" />';
         }
         return $html;
     }
@@ -98,7 +98,7 @@ class SitemapController extends Controller
         $lgs = Config::get('lgs') ?: [];
         if ($lgs) {
             $langs = implode('|', array_map('preg_quote', array_keys($lgs)));
-            $link = preg_replace('#^(' . $langs . ')/#i', '', $link);
+            $link = preg_replace('#^(' . $langs . ')(/|$)#i', '', $link);
         }
         $result = get_http_url();
         if ($siteDir) {

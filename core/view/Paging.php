@@ -178,7 +178,12 @@ class Paging
                             $path = $prepath . $url_break_char . $page . $url_rule_sort_suffix . query_string('p,s');
                         }
                     } else { // 首页分页
-                        $path = ($page == 1) ? SITE_INDEX_DIR . '/' : '?page=' . $page;
+                        if ($page == 1) {
+                            $lg = get_lg();
+                            $path = SITE_INDEX_DIR . '/' . ($lg ? $lg . '/' : '');
+                        } else {
+                            $path = '?page=' . $page;
+                        }
                     }
                 } else {
                     if ($url_rule_type == 3 && isset($_SERVER["QUERY_STRING"]) && $qs = $_SERVER["QUERY_STRING"]) {

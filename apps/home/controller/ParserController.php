@@ -241,7 +241,7 @@ class ParserController extends Controller
         if ($uri !== '') {
             $url .= '/' . $uri;
         }
-        return '\n    <link rel="alternate" hreflang="' . $hreflang . '" href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" />';
+        return "\n    " . '<link rel="alternate" hreflang="' . $hreflang . '" href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" />';
     }
 
     // 解析站点标签
