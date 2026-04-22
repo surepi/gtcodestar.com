@@ -161,6 +161,7 @@ class ParserController extends Controller
         $content = str_replace('{pboot:formcodestatus}', $this->config('form_check_code') === '0' ? 0 : 1, $content); // 是否开启表单验证码
 
         $content = str_replace('{pboot:checkcode}', CORE_DIR . '/code.php', $content); // 验证码路径
+        $content = str_replace('{pboot:lang}', get_lg(), $content); // 当前语言代码
         $content = str_replace('{pboot:lgpath}', Url::home('home/Do/area'), $content); // 多语言切换前置路径,如{pboot:lgpath}?lg=cn
         $content = str_replace('{pboot:hreflang}', $this->buildHreflangTags(), $content); // 多语言 hreflang 链接
 
